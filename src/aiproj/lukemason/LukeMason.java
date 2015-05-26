@@ -19,9 +19,7 @@ public class LukeMason implements Player, Piece {
 	
 	private int tallyB = 0;
 	private int tallyW = 0;
-	private Boolean gameOver = false;
-
-	
+	private Boolean gameOver = false;	
 	
 	@Override
 	public int init(int n, int p) {
@@ -90,8 +88,10 @@ public class LukeMason implements Player, Piece {
 		int[][] currentBoard = board.getCells();
 		
 		// check if move is valid
-		if (currentBoard[m.Row][m.Col] != Piece.EMPTY || m.P != getOpponentColour()
-				|| getGameOver()==true || m.Row >= board.getBoardDims() || m.Col >= board.getBoardDims()){
+		if (currentBoard[m.Row][m.Col] != Piece.EMPTY || 
+				m.P != getOpponentColour() || getGameOver()==true || 
+				m.Row >= board.getBoardDims() || 
+				m.Col >= board.getBoardDims()) {
 			
 			// move is invalid
 			return -1;

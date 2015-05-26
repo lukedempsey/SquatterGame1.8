@@ -20,7 +20,8 @@ public class Board {
 		
 		//Initialises the cells and dead arrays
 		cells = new int[getBoardDims()][getBoardDims()];
-		dead = new ConcurrentHashMap<>((this.getBoardDims()-2)*(this.getBoardDims()-2));
+		dead = new ConcurrentHashMap<>((this.getBoardDims()-2)*
+				(this.getBoardDims()-2));
 
 		//Fill the cells and deadcell arrays
 		fillBoard();
@@ -54,13 +55,13 @@ public class Board {
 					}	
 					
 				//Check captured white pieces
-				} else if (board.getCells()[row][col]==(CustomPiece.DEADWHITE)) {
+				} else if(board.getCells()[row][col]==(CustomPiece.DEADWHITE)){
 					if(lastCol==CustomPiece.BLACK){
 						player.setTallyB(player.getTallyB() + 1);
 					}
 					
 				//Check captured black pieces
-				} else if (board.getCells()[row][col]==(CustomPiece.DEADBLACK)) {
+				} else if(board.getCells()[row][col]==(CustomPiece.DEADBLACK)){
 					if(lastCol==CustomPiece.WHITE){
 						player.setTallyW(player.getTallyW() + 1);
 					}
@@ -190,7 +191,8 @@ public class Board {
 			for(int j =1; j<getCells().length-1; j++) {
 				
 				// check is the piece was visited by the floodfill
-				int tmp = dead.getOrDefault((i-1)*(getCells().length-2)+(j-1), -1);
+				int tmp = dead.getOrDefault((i-1)*
+						(getCells().length-2)+(j-1),-1);
 				
 				// if it was visited, mark it as captured
 				if(tmp != Piece.INVALID) {
@@ -232,7 +234,7 @@ public class Board {
 					System.out.print("b");
 					break;
 				case Piece.INVALID:
-					System.out.print("Invalid board data. Probs Check that"); 	//Need to sort out when an invalid piece of data would get as far as this method
+					System.out.print("Invalid board data. Probs Check that");
 					break;
 				}
 			}
