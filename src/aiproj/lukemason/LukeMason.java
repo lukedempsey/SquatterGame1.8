@@ -11,7 +11,7 @@ import java.io.PrintStream;
 public class LukeMason implements Player, Piece {
 	
 	//Initialises game objects
-	private static Board board;
+	private Board board;
 	
 	//Initialises game variables
 	public int getPlayerColour() {
