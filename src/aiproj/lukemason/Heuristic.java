@@ -1,5 +1,4 @@
 package aiproj.lukemason;
-
 import aiproj.squatter.*;
 
 /**
@@ -18,6 +17,20 @@ public class Heuristic {
 	
 	static boolean debug = false;
 	
+	public Heuristic(){
+	}
+	
+	//TODO for player vs player, change first arg to Player player
+	public int getHeuristic(LukeMason player, Board board, int[] coords){
+		int util = 0;
+		
+		util+=aliveDead(player);
+		util+=liberties(board, player);
+		
+		return util;
+		
+	}
+	
 	/**
 	 * Calculates the alive/dead factor
 	 * @return 
@@ -32,10 +45,10 @@ public class Heuristic {
 	/**
 	 * finds the amount of adjacent real-estate for each player
 	 * @param board
-	 * @param player
+	 * @param lukeMason
 	 * @return current players real-estate minus the opponents
 	 */
-	public static int liberties(Board board, LukeMason player){
+	public static int liberties(Board board, LukeMason lukeMason){
 		int[][] cells = board.getCells();
 		int dim = board.getBoardDims();
 		
@@ -53,15 +66,15 @@ public class Heuristic {
 						for(int d_j=-1; d_j <=1; d_j++){
 							try{
 								if(cells[i+d_i][j+d_j]==Piece.EMPTY){	
-									if(cells[i][j]==player.getPlayerColour()){
+									if(cells[i][j]==lukeMason.getPlayerColour()){
 										lib_player++;
-									}else if(cells[i][j]==player.getOpponentColour()){
+									}else if(cells[i][j]==lukeMason.getOpponentColour()){
 										lib_opponent++;
 									}else{
 										//TODO change this
 										System.out.println("ERROR: cell is neither player or opponent colour");
 										System.out.println(cells[i][j]);
-										System.out.println(player.getPlayerColour());
+										System.out.println(lukeMason.getPlayerColour());
 									}
 								}
 							}catch (ArrayIndexOutOfBoundsException e){

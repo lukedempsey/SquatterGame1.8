@@ -11,7 +11,7 @@ import java.io.PrintStream;
 public class LukeMason implements Player, Piece {
 	
 	//Initialises game objects
-	private Board board;
+	protected Board board;
 	
 	//Initialises game variables
 	public int getPlayerColour() {
@@ -19,8 +19,8 @@ public class LukeMason implements Player, Piece {
 	}
 
 	
-	private int playerColour;
-	private int opponentColour;
+	protected int playerColour;
+	protected int opponentColour;
 	
 	private int tallyB = 0;
 	private int tallyW = 0;
