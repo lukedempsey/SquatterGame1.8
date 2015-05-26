@@ -79,6 +79,8 @@ public class Random implements Player, Piece {
 	@Override
 	public Move makeMove() {
 		
+		Heuristic util = new Heuristic();
+		
 		Move move = new Move();
 		int[][] currentBoard = board.getCells();
 		int[] tmp_move;
@@ -89,14 +91,31 @@ public class Random implements Player, Piece {
 		
 		tmp_move = makeRandMove();
 		
+		//Testing heuristic
+		System.out.println("\n\nHeuristic:  ");
+		System.out.println(util.getHeuristic(this, board, tmp_move));
+		System.out.println("\n");
+		
 		move.Row = tmp_move[0];
 		move.Col = tmp_move[1];
 		move.P = this.playerColour;
 		currentBoard[tmp_move[0]][tmp_move[1]] = this.playerColour;
+
+		board.state(board, this);
 		board.setCells(currentBoard);
+		
+		
+		
 		return move;
 	}
 
+	public double getUtil(Random this, Board board, int[] coords){
+		Heuristic util = new Heuristic();
+		
+		util.getHeuristic(this, board, coords);
+		return 0;
+	}
+	
 	@Override
 	public int opponentMove(Move m) {
 		/**
@@ -162,7 +181,7 @@ public class Random implements Player, Piece {
 		 * respectively.
 		*/
 		board.printBoard();
-		Heuristic.liberties(board, this);
+		//Heuristic.liberties(board, this);
 	}
 	
 	public int getTallyB() {

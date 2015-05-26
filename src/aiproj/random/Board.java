@@ -240,6 +240,8 @@ public class Board {
 		}
 	}
 
+	
+	
 	public int getBoardDims() {
 		return boardDims;
 	}

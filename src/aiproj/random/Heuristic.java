@@ -18,6 +18,20 @@ public class Heuristic {
 	
 	static boolean debug = false;
 	
+	public Heuristic(){
+	}
+	
+	//TODO for player vs player, change first arg to Player player
+	public int getHeuristic(Random player, Board board, int[] coords){
+		int util = 0;
+		
+		util+=aliveDead(player);
+		util+=liberties(board, player);
+		
+		return util;
+		
+	}
+	
 	/**
 	 * Calculates the alive/dead factor
 	 * @return 
