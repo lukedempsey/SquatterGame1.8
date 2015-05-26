@@ -37,7 +37,7 @@ public class Random implements Player, Piece {
 		Your implementation of this function should return a negative value 
 		if it does not initialise successfully.
 		
-		********I think this is all sorted************/
+		*/
 		
 		board = new Board(n);
 
