@@ -14,11 +14,6 @@ public class LukeMason implements Player, Piece {
 	private Board board;
 	
 	//Initialises game variables
-	public int getPlayerColour() {
-		return playerColour;
-	}
-
-	
 	private int playerColour;
 	private int opponentColour;
 	
@@ -91,30 +86,25 @@ public class LukeMason implements Player, Piece {
 		 Move, which includes the information about the last move made by the opponent. 
 		 Based on your board configuration, if your player thinks this move is illegal 
 		 you need to return -1 otherwise this function should return 0. */
-		
-		int row = m.Row;
-		int col = m.Col;
-		int piece = m.P;
-		
+				
 		int[][] currentBoard = board.getCells();
 		
-		//check legal move
-		//TODO is this the only illegal move? 
-		//Account for captured territories
-		//Account for wrong colour placed
-		//TODO account for suicidal move
-		if (currentBoard[row][col] != Piece.EMPTY | piece!= getOpponentColour() | getGameOver()==true){
-			this.setGameOver(true);
+		// check if move is valid
+		if (currentBoard[m.Row][m.Col] != Piece.EMPTY || m.P != getOpponentColour()
+				|| getGameOver()==true || m.Row >= board.getBoardDims() || m.Col >= board.getBoardDims()){
+			
+			// move is invalid
 			return -1;
 		}
 		
-		//add move
-		currentBoard[row][col] = piece;
+		// otherwise add the move to the board
+		currentBoard[m.Row][m.Col] = m.P;
 		
-		//change board
+		// update the board
 		board.setCells(currentBoard);
 		
-		
+		// check for newly captured cells
+		board.floodfill(m);
 		
 		return 0;
 	}
@@ -172,6 +162,10 @@ public class LukeMason implements Player, Piece {
 	
 	public void setGameOver(Boolean gameOver) {
 		this.gameOver = gameOver;
+	}
+	
+	public int getPlayerColour() {
+		return playerColour;
 	}
 	
 	public void setPlayerColour(int playerColour) {
