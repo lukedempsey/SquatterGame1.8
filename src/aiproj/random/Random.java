@@ -94,7 +94,6 @@ public class Random implements Player, Piece {
 		 */
 		
 		Move move = new Move();
-		
 		int[][] currentBoard = board.getCells();
 		int[] tmp_move;
 		
