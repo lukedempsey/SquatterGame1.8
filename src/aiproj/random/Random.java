@@ -30,14 +30,12 @@ public class Random implements Player, Piece {
 	
 	@Override
 	public int init(int n, int p) {
-		/** TODO - This method is called by the referee to initialise the player. 
+		/** This method is called by the referee to initialise the player. 
 		The input parameters are as follows: n specifies the board dimension,
 		and p specifies the piece that the player will use (according to the 
 		Piece interface format) as assigned to your class by the referee. 
 		Your implementation of this function should return a negative value 
-		if it does not initialise successfully.
-		
-		*/
+		if it does not initialise successfully. */
 		
 		board = new Board(n);
 
@@ -54,7 +52,7 @@ public class Random implements Player, Piece {
 		return 0;
 	}
 
-	/**Sometimes stackoverflows, wont worried because only for testing */
+	/**Sometimes stackoverflows, wouldn't worry about it because only for testing */
 	public int[] makeRandMove(){
 		
 		int[][] currentBoard = board.getCells();
