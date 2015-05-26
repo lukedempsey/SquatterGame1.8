@@ -14,7 +14,7 @@ public class Random implements Player, Piece {
 	//private static final Boolean true = null;
 
 	//Initialises game objects
-	private static Board board;
+	private Board board;
 	
 	//Initialises game variables
 	private static Boolean debug = false;
@@ -94,7 +94,6 @@ public class Random implements Player, Piece {
 		 */
 		
 		Move move = new Move();
-		
 		int[][] currentBoard = board.getCells();
 		int[] tmp_move;
 		
