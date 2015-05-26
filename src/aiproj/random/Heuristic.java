@@ -22,9 +22,9 @@ public class Heuristic {
 	 * Calculates the alive/dead factor
 	 * @return 
 	 */
-	public int aliveDead(){
-		int white = Random.getTallyW();
-		int black = Random.getTallyB();
+	public int aliveDead(Random player){
+		int white = player.getTallyW();
+		int black = player.getTallyB();
 		
 		return white - black;
 	}

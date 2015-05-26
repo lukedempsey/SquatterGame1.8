@@ -4,20 +4,16 @@ import aiproj.squatter.*;
 import java.io.PrintStream;
 
 /**
- *  v
  * @author lukedempsey 638407, mason rose-campbell 638370
  *
  */
 
 public class Random implements Player, Piece {
 	
-	//private static final Boolean true = null;
-
 	//Initialises game objects
 	private Board board;
 	
 	//Initialises game variables
-	private static Boolean debug = false;
 	public int getPlayerColour() {
 		return playerColour;
 	}
@@ -26,9 +22,9 @@ public class Random implements Player, Piece {
 	private int playerColour;
 	private int opponentColour;
 	
-	private static int tallyB = 0;
-	private static int tallyW = 0;
-	private static Boolean gameOver = false;
+	private int tallyB = 0;
+	private int tallyW = 0;
+	private Boolean gameOver = false;
 
 	
 	
@@ -57,9 +53,9 @@ public class Random implements Player, Piece {
 		}
 		return 0;
 	}
-	
+
+	/**Sometimes stackoverflows, wont worried because only for testing */
 	public int[] makeRandMove(){
-		
 		
 		int[][] currentBoard = board.getCells();
 		int dim = board.getBoardDims();
@@ -82,34 +78,23 @@ public class Random implements Player, Piece {
 
 	@Override
 	public Move makeMove() {
-		/**TODO - This method is called by the referee to request a move by your player. 
-		 * Based on the current board configuration, your player should select its next 
-		 * move and return it as an object of the aiproj.squatter.Move class. 
-		 * Note that each player needs to maintain its own internal state representation 
-		 * of the current board configuration
-		 */
-		
-		/** WILL SOMETIMES HAVE A STACK OVERFLOW DEPENDING TO HOW THE GAME GOES 
-		 * AS IT TRIES TO FIND THE LAST PLACE TO MAKE A MOVE, CBF CHANGING, THIS IS ONLY FOR TESTS
-		 */
 		
 		Move move = new Move();
 		int[][] currentBoard = board.getCells();
 		int[] tmp_move;
 		
-		if (Random.getGameOver()){
+		if (this.getGameOver()){
 			return null;
 		}
 		
 		tmp_move = makeRandMove();
 		
-			move.Row = tmp_move[0];
-			move.Col = tmp_move[1];
-			move.P = this.playerColour;
-			currentBoard[tmp_move[0]][tmp_move[1]] = this.playerColour;
-			board.setCells(currentBoard);
-			return move;
-
+		move.Row = tmp_move[0];
+		move.Col = tmp_move[1];
+		move.P = this.playerColour;
+		currentBoard[tmp_move[0]][tmp_move[1]] = this.playerColour;
+		board.setCells(currentBoard);
+		return move;
 	}
 
 	@Override
@@ -134,7 +119,7 @@ public class Random implements Player, Piece {
 		//Account for wrong colour placed
 		//TODO account for suicidal move
 		if (currentBoard[row][col] != Piece.EMPTY | piece!= getOpponentColour() | getGameOver()==true){
-			Random.setGameOver(true);
+			this.setGameOver(true);
 			return -1;
 		}
 		
@@ -161,8 +146,8 @@ public class Random implements Player, Piece {
 		*/
 		
 		//Update game state
-		Board.state(debug, board, gameOver);
-		return Board.returnState(gameOver, tallyB, tallyW);
+		board.state(board, this);
+		return board.returnWinner(gameOver, tallyB, tallyW);
 
 	}
 
@@ -176,32 +161,32 @@ public class Random implements Player, Piece {
 		 * corresponding to a captured Black piece, a captured White piece, or a captured empty cell, 
 		 * respectively.
 		*/
-		Board.printBoard(board);
+		board.printBoard();
 		Heuristic.liberties(board, this);
 	}
 	
-	public static int getTallyB() {
+	public int getTallyB() {
 		return tallyB;
 	}
 	
-	public static void setTallyB(int tallyB) {
-		Random.tallyB = tallyB;
+	public void setTallyB(int tallyB) {
+		this.tallyB = tallyB;
 	}
 	
-	public static int getTallyW() {
+	public int getTallyW() {
 		return tallyW;
 	}
 	
-	public static void setTallyW(int tallyW) {
-		Random.tallyW = tallyW;
+	public void setTallyW(int tallyW) {
+		this.tallyW = tallyW;
 	}
 	
-	public static Boolean getGameOver() {
+	public Boolean getGameOver() {
 		return gameOver;
 	}
 	
-	public static void setGameOver(Boolean gameOver) {
-		Random.gameOver = gameOver;
+	public void setGameOver(Boolean gameOver) {
+		this.gameOver = gameOver;
 	}
 	
 	public void setPlayerColour(int playerColour) {
