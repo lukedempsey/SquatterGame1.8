@@ -11,7 +11,7 @@ import java.io.PrintStream;
 public class LukeMason implements Player, Piece {
 	
 	//Initialises game objects
-	private static Board board;
+	private Board board;
 	
 	//Initialises game variables
 	public int getPlayerColour() {
@@ -30,14 +30,12 @@ public class LukeMason implements Player, Piece {
 	
 	@Override
 	public int init(int n, int p) {
-		/** TODO - This method is called by the referee to initialise the player. 
+		/** This method is called by the referee to initialise the player. 
 		The input parameters are as follows: n specifies the board dimension,
 		and p specifies the piece that the player will use (according to the 
 		Piece interface format) as assigned to your class by the referee. 
 		Your implementation of this function should return a negative value 
-		if it does not initialise successfully.
-		
-		********I think this is all sorted************/
+		if it does not initialise successfully. **/
 		
 		board = new Board(n);
 
@@ -87,14 +85,13 @@ public class LukeMason implements Player, Piece {
 
 	@Override
 	public int opponentMove(Move m) {
-		/**
-		 This method is called by the referee to inform your player about the 
+		/** This method is called by the referee to inform your player about the 
 		 opponent's most recent move, so that you can maintain your board configuration. 
 		 The input parameter is an object from the class aiproj.squatter.
 		 Move, which includes the information about the last move made by the opponent. 
 		 Based on your board configuration, if your player thinks this move is illegal 
-		 you need to return -1 otherwise this function should return 0.
-		 */
+		 you need to return -1 otherwise this function should return 0. */
+		
 		int row = m.Row;
 		int col = m.Col;
 		int piece = m.P;
