@@ -31,11 +31,11 @@ public class Board {
 	 *  through the board
 	 * @param board Data will be examined about this board
 	 */
-	public void state(Board board) {
+	public void state(Board board, LukeMason player) {
 		int lastCol = 0;
 		
 		//Update whether or not the game is over
-		LukeMason.setGameOver(checkGameOver(board));
+		player.setGameOver(checkGameOver(board));
 		
 		//Search for a captured point
 		//Skip cells on bottom & right edges
@@ -48,21 +48,21 @@ public class Board {
 					
 					//Add to tally
 					if(lastCol==CustomPiece.BLACK){
-						LukeMason.setTallyB(LukeMason.getTallyB() + 1);
+						player.setTallyB(player.getTallyB() + 1);
 					} else {
-						LukeMason.setTallyW(LukeMason.getTallyW() + 1);
+						player.setTallyW(player.getTallyW() + 1);
 					}	
 					
 				//Check captured white pieces
 				} else if (board.getCells()[row][col]==(CustomPiece.DEADWHITE)) {
 					if(lastCol==CustomPiece.BLACK){
-						LukeMason.setTallyB(LukeMason.getTallyB() + 1);
+						player.setTallyB(player.getTallyB() + 1);
 					}
 					
 				//Check captured black pieces
 				} else if (board.getCells()[row][col]==(CustomPiece.DEADBLACK)) {
 					if(lastCol==CustomPiece.WHITE){
-						LukeMason.setTallyW(LukeMason.getTallyW() + 1);
+						player.setTallyW(player.getTallyW() + 1);
 					}
 					
 				//If not captured, set to latest colour

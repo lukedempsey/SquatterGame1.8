@@ -14,7 +14,6 @@ public class LukeMason implements Player, Piece {
 	private static Board board;
 	
 	//Initialises game variables
-	private static Boolean debug = false;
 	public int getPlayerColour() {
 		return playerColour;
 	}
@@ -23,9 +22,9 @@ public class LukeMason implements Player, Piece {
 	private int playerColour;
 	private int opponentColour;
 	
-	private static int tallyB = 0;
-	private static int tallyW = 0;
-	private static Boolean gameOver = false;
+	private int tallyB = 0;
+	private int tallyW = 0;
+	private Boolean gameOver = false;
 
 	
 	
@@ -108,7 +107,7 @@ public class LukeMason implements Player, Piece {
 		//Account for wrong colour placed
 		//TODO account for suicidal move
 		if (currentBoard[row][col] != Piece.EMPTY | piece!= getOpponentColour() | getGameOver()==true){
-			LukeMason.setGameOver(true);
+			this.setGameOver(true);
 			return -1;
 		}
 		
@@ -135,8 +134,8 @@ public class LukeMason implements Player, Piece {
 		*/
 		
 		//Update game state
-		Board.state(debug, board, gameOver);
-		return Board.returnState(gameOver, tallyB, tallyW);
+		board.state(board, this);
+		return board.returnWinner(gameOver, tallyB, tallyW);
 
 	}
 
@@ -150,32 +149,32 @@ public class LukeMason implements Player, Piece {
 		 * corresponding to a captured Black piece, a captured White piece, or a captured empty cell, 
 		 * respectively.
 		*/
-		Board.printBoard(board);
+		board.printBoard();
 		Heuristic.liberties(board, this);
 	}
 	
-	public static int getTallyB() {
+	public int getTallyB() {
 		return tallyB;
 	}
 	
-	public static void setTallyB(int tallyB) {
-		LukeMason.tallyB = tallyB;
+	public void setTallyB(int tallyB) {
+		this.tallyB = tallyB;
 	}
 	
-	public static int getTallyW() {
+	public int getTallyW() {
 		return tallyW;
 	}
 	
-	public static void setTallyW(int tallyW) {
-		LukeMason.tallyW = tallyW;
+	public void setTallyW(int tallyW) {
+		this.tallyW = tallyW;
 	}
 	
-	public static Boolean getGameOver() {
+	public Boolean getGameOver() {
 		return gameOver;
 	}
 	
-	public static void setGameOver(Boolean gameOver) {
-		LukeMason.gameOver = gameOver;
+	public void setGameOver(Boolean gameOver) {
+		this.gameOver = gameOver;
 	}
 	
 	public void setPlayerColour(int playerColour) {
