@@ -11,7 +11,7 @@ public class Board {
 	private ConcurrentHashMap<Integer, Integer> dead = null;
 	
 	/** Creates a new Board object
-	 * @param n 
+	 * @param n board dimensions as an int
 	 */
 	public Board(int n) {
 		
@@ -159,7 +159,7 @@ public class Board {
 		else if (dead.containsKey((row-1)*(this.boardDims-2)+(col-1))){
 			return true;
 		}
-		// check this cell of as visited
+		// check this cell of as visited (assume dead first)
 		dead.put((row-1)*(this.boardDims-2)+(col-1), 0);
 		
 		// check if this cell one of the capturing cells (a boundary)
@@ -178,7 +178,8 @@ public class Board {
 			return true;
 		}
 		
-		// isn't captured
+		// isn't captured, change from visited to dead
+		dead.put((row-1)*(this.boardDims-2)+(col-1), -1);
 		return false;
 	}
 	
@@ -205,6 +206,7 @@ public class Board {
 		}
 	}
 
+	/** Prints the board configuration to standard output */
 	public void printBoard(){
 		int dims = this.boardDims;
 		for(int i=0; i<dims; i++){
