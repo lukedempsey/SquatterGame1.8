@@ -159,14 +159,12 @@ public class Board {
 		} // check if this cell has been visited already
 		else if (dead.containsKey((row-1)*(this.boardDims-2)+(col-1))){
 			return true;
+		} // check if this cell one of the capturing cells (a boundary)
+		else if (getCells()[row][col] == colour) {
+			return true;
 		}
 		// check this cell of as visited (assume dead first)
 		dead.put((row-1)*(this.boardDims-2)+(col-1), 0);
-		
-		// check if this cell one of the capturing cells (a boundary)
-		if (getCells()[row][col] == colour) {
-			return true;
-		}
 		
 		// check the surrounding cells
 		boolean up = findNext(colour, row-1, col);
