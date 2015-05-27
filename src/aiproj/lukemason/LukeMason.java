@@ -57,57 +57,8 @@ public class LukeMason implements Player, Piece {
 	public Move makeMove() {
 
 		Move move = new Move();
-<<<<<<< HEAD
 		move = minimax(board, this.depth, true, 0).getMove();
-=======
-		
-		//This is just here for testing
-		//minimax(board, this.depth, true);
-		
-		
-			System.out.println("Minimax started!");
-			move = minimax(board, this.depth, true, 0).getMove();
-		
-		
-		
-		//System.out.println("first depth: "+this.depth);
-		
-		
-		
-		//System.out.println("MOve"+move.P);
-		
-		
-		/**int[][]cells = board.getCells();
-		
-		//Dumb play
-		for(int i=0; i<board.getBoardDims(); i++){
-			for(int j=0; j<board.getBoardDims(); j++){
-				if (cells[i][j]==Piece.EMPTY){
-					Move move = new Move();
-					move.Row = i;
-					move.Col = j;
-					move.P = this.playerColour;	
-<<<<<<< Updated upstream
-					currentBoard[i][j] = this.playerColour;
-					board.setCells(currentBoard);
-					// check for newly captured cells
-					board.floodfill(move);
-<<<<<<< HEAD
-					board.update();
-=======
-					board.updateDead();
-=======
-					cells[i][j] = this.playerColour;
-					board.setCells(cells);
->>>>>>> Stashed changes
->>>>>>> origin/master
-					return move;
-				}
-			}
-		}*/
-		
->>>>>>> origin/master
-		board.placeMove(board, move);
+		board.placeMove(board, move);	
 		return move;
 	}
 
@@ -288,9 +239,7 @@ public class LukeMason implements Player, Piece {
 		return h;
 	}
 	
-	public diagonals(Board board){
-		
-	}
+
 	
 	/**
 	 * Calculates the alive/dead factor
