@@ -183,8 +183,6 @@ public class Board {
 	public void floodfill(Move m){
 		dead.clear();
 	
-		System.out.println("\n\nstarting to floodfill from :" + m.Row + ", " + m.Col);
-		
 		// check all the adjacent cells
 		findNextUp(m.P, m.Row-1, m.Col);
 		findNextDown(m.P, m.Row+1, m.Col);
@@ -203,15 +201,12 @@ public class Board {
 		
 		//if the row and col index is out of bounds
 		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
-			System.out.println("found boundary");
 			return false;
 		} // if its a cell capturing the current arrangement
 		else if(this.cells[row][col] == colour) {
-			System.out.println("found capturing cell at " + row + ", " + col);
 			return true;
 		} // check if cell has already been visited
 		else if(dead.containsKey(row*this.boardDims + col)) {
-			System.out.println("Already been here" + row + ", " + col);
 			return true;
 		}
 		
@@ -244,15 +239,12 @@ public class Board {
 		
 		//if the row and col index is out of bounds
 		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
-			System.out.println("found boundary");
 			return false;
 		} // if its a cell capturing the current arrangement
 		else if(this.cells[row][col] == colour) {
-			System.out.println("found capturing cell at " + row + ", " + col);
 			return true;
 		} // check if cell has already been visited
 		else if(dead.containsKey(row*this.boardDims + col)) {
-			System.out.println("Already been here" + row + ", " + col);
 			return true;
 		}
 		
@@ -285,15 +277,12 @@ public class Board {
 		
 		//if the row and col index is out of bounds
 		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
-			System.out.println("found boundary");
 			return false;
 		} // if its a cell capturing the current arrangement
 		else if(this.cells[row][col] == colour) {
-			System.out.println("found capturing cell at " + row + ", " + col);
 			return true;
 		} // check if cell has already been visited
 		else if(dead.containsKey(row*this.boardDims + col)) {
-			System.out.println("Already been here" + row + ", " + col);
 			return true;
 		}
 		
@@ -326,15 +315,12 @@ public class Board {
 		
 		//if the row and col index is out of bounds
 		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
-			System.out.println("found boundary");
 			return false;
 		} // if its a cell capturing the current arrangement
 		else if(this.cells[row][col] == colour) {
-			System.out.println("found capturing cell at " + row + ", " + col);
 			return true;
 		} // check if cell has already been visited
 		else if(dead.containsKey(row*this.boardDims + col)) {
-			System.out.println("Already been here" + row + ", " + col);
 			return true;
 		}
 		
@@ -353,7 +339,6 @@ public class Board {
 			dead.put(row*this.boardDims + col, Piece.INVALID);
 			return false;
 		}
-		
 		
 		return true;
 	}
