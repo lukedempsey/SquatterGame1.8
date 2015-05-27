@@ -1,14 +1,14 @@
 package aiproj.lukemason;
 import aiproj.squatter.*;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 public class Board {
 
 	//Board variables
 	private int boardDims;
 	private int[][] cells = null;
-	private ConcurrentHashMap<Integer, Integer> dead = null;
+	private HashMap<Integer, Integer> dead = null;
 	
 	/** Creates a new Board object
 	 * @param n board dimensions as an int
@@ -19,9 +19,8 @@ public class Board {
 		setBoardDims(n);
 		
 		//Initialises the cells and dead arrays
-		cells = new int[getBoardDims()][getBoardDims()];
-		dead = new ConcurrentHashMap<>((this.getBoardDims()-2)*
-				(this.getBoardDims()-2));
+		cells = new int[n][n];
+		dead = new HashMap<>(n*n);
 
 		//Fill the cells and deadcell arrays
 		fillBoard();
@@ -157,14 +156,14 @@ public class Board {
 		if(row<0|col<0|row>=this.boardDims|col>=this.boardDims) {
 			return false;
 		} // check if this cell has been visited already
-		else if (dead.containsKey((row-1)*(this.boardDims-2)+(col-1))){
+		else if (dead.containsKey((row)*(this.boardDims)+(col))){
 			return true;
 		} // check if this cell one of the capturing cells (a boundary)
-		else if (getCells()[row][col] == colour) {
+		else if (this.cells[row][col] == colour) {
 			return true;
 		}
-		// check this cell of as visited (assume dead first)
-		dead.put((row-1)*(this.boardDims-2)+(col-1), 0);
+		// assume cell is dead (visited)
+		dead.put((row)*(this.boardDims)+(col), Piece.DEAD);
 		
 		// check the surrounding cells
 		boolean up = findNext(colour, row-1, col);
@@ -177,23 +176,23 @@ public class Board {
 			return true;
 		}
 		
-		// isn't captured, change from visited to dead
-		dead.put((row-1)*(this.boardDims-2)+(col-1), -1);
+		// isn't captured, change from visited to not dead
+		dead.replace((row)*(this.boardDims)+(col), Piece.INVALID);
 		return false;
 	}
 	
 	/** updates the board data to include the newly captured (dead) cells */
 	public void updateDead(){
 	
-		for(int i=1; i<getCells().length-1; i++) {
-			for(int j =1; j<getCells().length-1; j++) {
+		for(int i=1; i<this.boardDims-1; i++) {
+			for(int j =1; j<this.boardDims-1; j++) {
 				
 				// check is the piece was visited by the floodfill
-				int tmp = dead.getOrDefault((i-1)*
-						(getCells().length-2)+(j-1),-1);
+				int tmp = dead.getOrDefault((i)*(this.boardDims)+(j), Piece.INVALID);
 				
-				// if it was visited, mark it as captured
-				if(tmp != Piece.INVALID) {
+				// if its dead, change the board
+				if(tmp == Piece.DEAD) {
+					System.out.println(i+" "+j);
 					if(getCells()[i][j]==Piece.WHITE) {
 						getCells()[i][j] = CustomPiece.DEADWHITE;
 					} else if(getCells()[i][j]==Piece.BLACK) {
