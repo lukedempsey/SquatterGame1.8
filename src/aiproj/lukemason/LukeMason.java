@@ -58,7 +58,7 @@ public class LukeMason implements Player, Piece {
 
 		Move move = new Move();
 		move = minimax(board, this.depth, true, 0).getMove();
-		board.placeMove(board, move);
+		board.placeMove(board, move);	
 		return move;
 	}
 
@@ -94,7 +94,7 @@ public class LukeMason implements Player, Piece {
 		
 		// check for newly captured cells
 		board.floodfill(m);
-		board.updateDead();
+		board.update();
 		
 		return 0;
 	}

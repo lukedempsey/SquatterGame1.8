@@ -126,13 +126,11 @@ public class Board {
 	
 	//Places a piece at an inputted location
 	public Board placeMove(Board b, Move m){
-		//System.out.println("begin placemove");
 		int[][] localBoard = b.getCells();
 		localBoard[m.Row][m.Col] = m.P;
-		//System.out.println("print board");
 		b.setCells(localBoard);
-		//b.printBoard();
-		//System.out.println("---");
+		b.floodfill(m);
+		b.update();
 		return b;
 	}
 
