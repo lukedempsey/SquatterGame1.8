@@ -105,7 +105,6 @@ public class LukeMason implements Player, Piece {
 		
 		// check for newly captured cells
 		board.floodfill(m);
-		board.updateDead();
 		
 		return 0;
 	}

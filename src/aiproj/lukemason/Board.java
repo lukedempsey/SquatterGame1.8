@@ -5,13 +5,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Board {
 
-	// direction variables
-	public static final int UP = 1, DOWN = 2, LEFT = 3, RIGHT = 4;
-	
 	//Board variables
 	private int boardDims;
 	private int[][] cells = null;
-	ConcurrentHashMap<Integer, Integer> dead = null;
+	private ConcurrentHashMap<Integer, Integer> dead = null;
 	
 	/** Creates a new Board object
 	 * @param n board dimensions as an int
@@ -22,8 +19,9 @@ public class Board {
 		setBoardDims(n);
 		
 		//Initialises the cells and dead arrays
-		cells = new int[n][n];
-		dead = new ConcurrentHashMap<>((n-2)*(n-2));
+		cells = new int[getBoardDims()][getBoardDims()];
+		dead = new ConcurrentHashMap<>((this.getBoardDims()-2)*
+				(this.getBoardDims()-2));
 
 		//Fill the cells and deadcell arrays
 		fillBoard();
@@ -138,68 +136,49 @@ public class Board {
 		int colour = m.P;
 		int row = m.Row;
 		int col = m.Col;
-		
-		// check all adjacent cells
-		findNext(colour, row-1, col, UP);
-		findNext(colour, row+1, col, DOWN);
-		findNext(colour, row, col+1, LEFT);
-		findNext(colour, row, col-1, RIGHT);
+			
+		// check all the adjacent cells
+		findNext(colour, row-1, col);
+		findNext(colour, row+1, col);
+		findNext(colour, row, col+1);
+		findNext(colour, row, col-1);
 		
 	}
 	
-	/** Looks at the next cell in the board and recursively finds if it's dead
+	/** Looks at the next cell in the board and recursively finds it's dead
 	 * @param colour the colour most recently placed (doing the capturing)
 	 * @param row the row location in the board
 	 * @param col the column location in the board
 	 * @return whether or not this cell is dead (captured)
 	 */
-	public boolean findNext(int colour, int row, int col, int direction) {
+	public boolean findNext(int colour, int row, int col) {
 		
 		// checks if the cell is out of bounds
 		if(row<0|col<0|row>=this.boardDims|col>=this.boardDims) {
 			return false;
+		} // check if this cell has been visited already
+		else if (dead.containsKey((row-1)*(this.boardDims-2)+(col-1))){
+			return true;
 		} // check if this cell one of the capturing cells (a boundary)
 		else if (getCells()[row][col] == colour) {
 			return true;
-		} // check if this cell has been visited already
-		else if (dead.containsKey((row)*(this.boardDims)+(col))){
-			return true;
 		}
-		// check this cell off as visited (assume not dead first)
-		dead.put((row)*(this.boardDims)+(col), -1);
+		// check this cell of as visited (assume dead first)
+		dead.put((row-1)*(this.boardDims-2)+(col-1), 0);
 		
-		//assume is next to a non capturing cell
-		boolean above = false;
-		boolean below = false;
-		boolean to_left = false;
-		boolean to_right = false;
+		// check the surrounding cells
+		boolean up = findNext(colour, row-1, col);
+		boolean right = findNext(colour, row, col+1);
+		boolean left = findNext(colour, row, col-1);
+		boolean down = findNext(colour, row+1, col);
 		
-		//don't search where you came from
-		if (direction == UP) {
-			above = findNext(colour, row-1, col, UP);
-			to_left = findNext(colour, row, col-1, LEFT);
-			to_right = findNext(colour, row, col+1, RIGHT);
-		} else if (direction == DOWN) {
-			below = findNext(colour, row+1, col, DOWN);
-			to_left = findNext(colour, row, col-1, LEFT);
-			to_right = findNext(colour, row, col+1, RIGHT);
-		} else if (direction == LEFT) {
-			above = findNext(colour, row-1, col, UP);
-			below = findNext(colour, row+1, col, DOWN);
-			to_left = findNext(colour, row, col-1, LEFT);
-		} else {
-			above = findNext(colour, row-1, col, UP);
-			below = findNext(colour, row+1, col, DOWN);
-			to_right = findNext(colour, row, col+1, RIGHT);
-		}
-		
-		//check if all surrounding cells were capturing/captured
-		if (above & below & to_left & to_right) {
-			dead.put((row)*(this.boardDims)+(col), 3);
+		// cell is captured
+		if (up & down & left & right) {
 			return true;
 		}
 		
-		// isn't captured
+		// isn't captured, change from visited to dead
+		dead.put((row-1)*(this.boardDims-2)+(col-1), -1);
 		return false;
 	}
 	
@@ -210,11 +189,11 @@ public class Board {
 			for(int j =1; j<getCells().length-1; j++) {
 				
 				// check is the piece was visited by the floodfill
-				int tmp = dead.getOrDefault((i)*
-						(getCells().length)+(j), Piece.INVALID);
+				int tmp = dead.getOrDefault((i-1)*
+						(getCells().length-2)+(j-1),-1);
 				
-				// if the cells are dead, change the board data appropriately
-				if(tmp == Piece.DEAD) {
+				// if it was visited, mark it as captured
+				if(tmp != Piece.INVALID) {
 					if(getCells()[i][j]==Piece.WHITE) {
 						getCells()[i][j] = CustomPiece.DEADWHITE;
 					} else if(getCells()[i][j]==Piece.BLACK) {
