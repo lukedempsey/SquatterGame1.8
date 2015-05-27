@@ -1,3 +1,5 @@
+//Bit of a simple player
+
 package aiproj.lukemason;
 
 import aiproj.squatter.Move;

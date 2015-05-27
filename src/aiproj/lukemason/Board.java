@@ -10,6 +10,8 @@ public class Board {
 	private int[][] cells = null;
 	private HashMap<Integer, Integer> dead = null;
 	
+	
+
 	/** Creates a new Board object
 	 * @param n board dimensions as an int
 	 */
@@ -26,6 +28,7 @@ public class Board {
 		fillBoard();
 
 	}
+	
 
 	/** Finds the current game state (the scores of each player) by searching
 	 *  through the board
@@ -73,6 +76,7 @@ public class Board {
 		}
 	}
 	
+	
 	/** Fills the initialised board with empty cells */
 	public void fillBoard() {
 		
@@ -83,6 +87,53 @@ public class Board {
 			}
 		}
 		
+	}
+	
+	public int getTallyW(){
+		int tally = 0;
+		int[][]cells = this.getCells();
+		for(int i=0; i<this.getBoardDims(); i++){
+			for(int j=0; j<this.getBoardDims(); j++){
+				if (cells[i][j]==Piece.WHITE){
+					tally++;
+				}
+			}
+		}
+		return tally;
+	}
+	
+	public int getTallyB(){
+		int tally = 0;
+		int[][]cells = this.getCells();
+		for(int i=0; i<this.getBoardDims(); i++){
+			for(int j=0; j<this.getBoardDims(); j++){
+				if (cells[i][j]==Piece.BLACK){
+					tally++;
+				}
+			}
+		}
+		return tally;
+	}
+	
+	/** Fills the initialised board cells inputted */
+	public void fillBoard(int[][] contents, HashMap<Integer, Integer> deadIn) {
+		
+		// initialise board elements to empty
+		cells = contents;
+		dead = deadIn;
+		
+	}
+	
+	//Places a piece at an inputted location
+	public Board placeMove(Board b, Move m){
+		//System.out.println("begin placemove");
+		int[][] localBoard = b.getCells();
+		localBoard[m.Row][m.Col] = m.P;
+		//System.out.println("print board");
+		b.setCells(localBoard);
+		//b.printBoard();
+		//System.out.println("---");
+		return b;
 	}
 
 	/** Checks if the current board state satisfys an end game condition 
@@ -377,11 +428,26 @@ public class Board {
 	}
 
 	public int[][] getCells() {
-		return this.cells;
+		int[][]output = new int[this.getBoardDims()][this.getBoardDims()];
+		
+		for (int i=0; i< this.getBoardDims(); i++){
+			for (int j=0; j < this.getBoardDims(); j++){
+				output[i][j] = this.cells[i][j];
+			}
+		}
+		return output;
 	}
 
 	public void setCells(int[][] cells) {
 		this.cells = cells;
+	}
+	
+	public HashMap<Integer, Integer> getDead() {
+		return dead;
+	}
+
+	public void setDead(HashMap<Integer, Integer> dead) {
+		this.dead = dead;
 	}
 	
 }
