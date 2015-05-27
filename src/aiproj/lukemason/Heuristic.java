@@ -8,7 +8,10 @@ import aiproj.squatter.*;
  * 
  * Currently three main factors influencing if the proposed move is worthwhile
  * 
+ * for optimization, try to make faster by not running certain factors for the first few moves
+ * 
  * liberties (free spaces adjacent)
+<<<<<<< Updated upstream
  * 		for us - did this move remain mostly uncaptured?
  * 		for them - did our move encapsulate as much of them?
  * alive/dead
@@ -17,18 +20,45 @@ import aiproj.squatter.*;
  * connecting the pieces
  * 		for us - did we put a piece next to our piece?
  *  	for them - not sure what just yet...
+=======
+ * 		free space adjacent to cells, weighted low. 
+ * 		aim is there will be more free space as the capturer than the captured
+ * alive/dead
+ * 		
+ * connecting the stones
+ *
+>>>>>>> Stashed changes
  */
+
+//try huddling all in a corner as a dumb technique
 
 public class Heuristic {
 	
 	static boolean debug = false;
 	
+<<<<<<< Updated upstream
 	/** Calculates the alive/dead factor
 	 * @return the factor as an int
+=======
+	public double getHeuristic(Board board, LukeMason player){
+		double h = 0;
+		h+=liberties(board, player);
+		h+=aliveDead(board, player);
+		//System.out.println("********"+h);
+		
+		return h;
+	}
+	
+
+	
+	/**
+	 * Calculates the alive/dead factor
+	 * @return 
+>>>>>>> Stashed changes
 	 */
-	public int aliveDead(LukeMason player){
-		int white = player.getTallyW();
-		int black = player.getTallyB();
+	public int aliveDead(Board board, LukeMason player){
+		int white = board.getTallyW();
+		int black = board.getTallyB();
 		
 		return white - black;
 	}
@@ -38,7 +68,7 @@ public class Heuristic {
 	 * @param player the data is from this players perspective
 	 * @return current players real-estate minus the opponents
 	 */
-	public static int liberties(Board board, LukeMason player){
+	public int liberties(Board board, LukeMason player){
 		int[][] cells = board.getCells();
 		int dim = board.getBoardDims();
 		
@@ -64,9 +94,9 @@ public class Heuristic {
 										lib_opponent++;
 									}else{
 										//TODO change this
-										System.out.println("ERROR: cell is neither player or opponent colour");
-										System.out.println(cells[i][j]);
-										System.out.println(player.getPlayerColour());
+										//System.out.println("ERROR: cell is neither player or opponent colour");
+										//System.out.println(cells[i][j]);
+										//System.out.println(player.getPlayerColour());
 									}
 								}
 							}catch (ArrayIndexOutOfBoundsException e){
