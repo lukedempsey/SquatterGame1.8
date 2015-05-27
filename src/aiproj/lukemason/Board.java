@@ -29,12 +29,6 @@ public class Board {
 
 	}
 	
-	public double getHeuristic(Board board, LukeMason player){
-		
-		Heuristic h = new Heuristic();
-		
-		return h.getHeuristic(board, player);
-	}
 
 	/** Finds the current game state (the scores of each player) by searching
 	 *  through the board
@@ -122,7 +116,7 @@ public class Board {
 	}
 	
 	/** Fills the initialised board cells inputted */
-	public void fillBoard(int[][] contents, ConcurrentHashMap<Integer, Integer> deadIn) {
+	public void fillBoard(int[][] contents, HashMap<Integer, Integer> deadIn) {
 		
 		// initialise board elements to empty
 		cells = contents;
@@ -319,11 +313,11 @@ public class Board {
 		this.cells = cells;
 	}
 	
-	public ConcurrentHashMap<Integer, Integer> getDead() {
+	public HashMap<Integer, Integer> getDead() {
 		return dead;
 	}
 
-	public void setDead(ConcurrentHashMap<Integer, Integer> dead) {
+	public void setDead(HashMap<Integer, Integer> dead) {
 		this.dead = dead;
 	}
 	

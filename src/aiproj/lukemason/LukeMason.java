@@ -19,7 +19,7 @@ public class LukeMason implements Player, Piece {
 	protected int opponentColour;
 	
 	//Default foresight is two moves
-	protected int depth = 4;
+	protected int depth = 3;
 	
 	private int tallyB = 0;
 	private int tallyW = 0;

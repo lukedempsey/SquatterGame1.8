@@ -35,27 +35,7 @@ import aiproj.squatter.*;
 public class Heuristic {
 	
 	static boolean debug = false;
-	
-<<<<<<< Updated upstream
-	/** Calculates the alive/dead factor
-	 * @return the factor as an int
-=======
-	public double getHeuristic(Board board, LukeMason player){
-		double h = 0;
-		h+=liberties(board, player);
-		h+=aliveDead(board, player);
-		//System.out.println("********"+h);
-		
-		return h;
-	}
-	
 
-	
-	/**
-	 * Calculates the alive/dead factor
-	 * @return 
->>>>>>> Stashed changes
-	 */
 	public int aliveDead(Board board, LukeMason player){
 		int white = board.getTallyW();
 		int black = board.getTallyB();
