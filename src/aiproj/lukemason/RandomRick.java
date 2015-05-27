@@ -5,7 +5,7 @@ package aiproj.lukemason;
 import aiproj.squatter.Move;
 import aiproj.squatter.Piece;
 
-public class Rick extends LukeMason{
+public class RandomRick extends LukeMason{
 
 	/**Sometimes stackoverflows, wouldn't worry about it because only for testing */
 	public int[] makeRandMove(){

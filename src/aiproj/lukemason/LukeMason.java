@@ -25,11 +25,6 @@ public class LukeMason implements Player, Piece {
 	private int tallyW = 0;
 	private Boolean gameOver = false;	
 	
-	//minimax states
-	public final int MIN = 0;
-	public final int MAX = 1;
-	public final double NEGINF = -9999;
-	public final double POSINF = 9999;
 	
 	@Override
 	public int init(int n, int p) {
@@ -61,57 +56,9 @@ public class LukeMason implements Player, Piece {
 	@Override
 	public Move makeMove() {
 
-		/**TODO - This method is called by the referee to request a move by your player. 
-		 * Based on the current board configuration, your player should select its next 
-		 * move and return it as an object of the aiproj.squatter.Move class. 
-		 * Note that each player needs to maintain its own internal state representation 
-		 * of the current board configuration
-		 */
 		Move move = new Move();
-		
-		//This is just here for testing
-		//minimax(board, this.depth, true);
-		
-		
-			System.out.println("Minimax started!");
-			move = minimax(board, this.depth, true, 0).getMove();
-		
-		
-		
-		//System.out.println("first depth: "+this.depth);
-		
-		
-		
-		//System.out.println("MOve"+move.P);
-		
-		
-		/**int[][]cells = board.getCells();
-		
-		//Dumb play
-		for(int i=0; i<board.getBoardDims(); i++){
-			for(int j=0; j<board.getBoardDims(); j++){
-				if (cells[i][j]==Piece.EMPTY){
-					Move move = new Move();
-					move.Row = i;
-					move.Col = j;
-					move.P = this.playerColour;	
-<<<<<<< Updated upstream
-					currentBoard[i][j] = this.playerColour;
-					board.setCells(currentBoard);
-					// check for newly captured cells
-					board.floodfill(move);
-					board.updateDead();
-=======
-					cells[i][j] = this.playerColour;
-					board.setCells(cells);
->>>>>>> Stashed changes
-					return move;
-				}
-			}
-		}*/
-		
+		move = minimax(board, this.depth, true, 0).getMove();
 		board.placeMove(board, move);
-		
 		return move;
 	}
 
@@ -123,7 +70,6 @@ public class LukeMason implements Player, Piece {
 		if (currentBoard[m.Row][m.Col] != Piece.EMPTY || getGameOver()==true || 
 				m.Row >= board.getBoardDims() || 
 				m.Col >= board.getBoardDims()) {
-			////System.out.println("heree");
 			// move is invalid
 			return false;
 		}
@@ -167,8 +113,6 @@ public class LukeMason implements Player, Piece {
 	public void printBoard(PrintStream output) {
 		board.printBoard();
 	}
-	
-
 		
 	public double utility(Board board){
 		if (board.getTallyW()<board.getTallyB()){
@@ -295,7 +239,9 @@ public class LukeMason implements Player, Piece {
 		return h;
 	}
 	
-
+	public diagonals(Board board){
+		
+	}
 	
 	/**
 	 * Calculates the alive/dead factor
@@ -342,9 +288,6 @@ public class LukeMason implements Player, Piece {
 										lib_opponent++;
 									}else{
 										//TODO change this
-										//System.out.println("ERROR: cell is neither player or opponent colour");
-										//System.out.println(cells[i][j]);
-										//System.out.println(player.getPlayerColour());
 									}
 								}
 							}catch (ArrayIndexOutOfBoundsException e){
@@ -354,8 +297,6 @@ public class LukeMason implements Player, Piece {
 				}	
 			}
 		}
-		//System.out.println(lib_player);
-		//System.out.println(lib_opponent);
 		return lib_player - lib_opponent;
 	}
 
