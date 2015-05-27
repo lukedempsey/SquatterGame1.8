@@ -46,7 +46,6 @@ public class RandomRick extends LukeMason{
 		move.Col = tmp_move[1];
 		move.P = this.playerColour;
 		board.placeMove(board, move);
-
 		return move;
 	}
 	

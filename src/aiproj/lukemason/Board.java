@@ -126,11 +126,17 @@ public class Board {
 	
 	//Places a piece at an inputted location
 	public Board placeMove(Board b, Move m){
+		//System.out.println("begin placemove");
 		int[][] localBoard = b.getCells();
 		localBoard[m.Row][m.Col] = m.P;
+		//System.out.println("print board");
 		b.setCells(localBoard);
+		//b.printBoard();
+		//System.out.println("---");
 		b.floodfill(m);
-		b.update();
+		//System.out.println(dead);
+		b.update(b);
+		//b.printBoard();
 		return b;
 	}
 
@@ -183,10 +189,17 @@ public class Board {
 		
 		// check all the adjacent cells
 		findNextUp(m.P, m.Row-1, m.Col);
+		update(this);
+		dead.clear();
 		findNextDown(m.P, m.Row+1, m.Col);
+		update(this);
+		dead.clear();
 		findNextLeft(m.P, m.Row, m.Col-1);
+		update(this);
+		dead.clear();
 		findNextRight(m.P, m.Row, m.Col+1);
-		
+		update(this);
+		dead.clear();
 	}
 	
 	/** Looks at the above cell in the board and finds if it's dead
@@ -212,15 +225,15 @@ public class Board {
 		dead.put(row*this.boardDims + col, Piece.DEAD);
 		
 		if(!(findNextUp(colour, row-1, col))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		if(!(findNextLeft(colour, row, col-1))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		if(!(findNextRight(colour, row, col+1))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		
@@ -250,15 +263,15 @@ public class Board {
 		dead.put(row*this.boardDims + col, Piece.DEAD);
 		
 		if(!(findNextDown(colour, row+1, col))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		if(!(findNextLeft(colour, row, col-1))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		if(!(findNextRight(colour, row, col+1))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		
@@ -288,15 +301,15 @@ public class Board {
 		dead.put(row*this.boardDims + col, Piece.DEAD);
 		
 		if(!(findNextLeft(colour, row, col-1))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		if(!(findNextUp(colour, row-1, col))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		if(!(findNextDown(colour, row+1, col))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		
@@ -326,15 +339,15 @@ public class Board {
 		dead.put(row*this.boardDims + col, Piece.DEAD);
 		
 		if(!(findNextRight(colour, row, col+1))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		if(!(findNextUp(colour, row-1, col))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		if(!(findNextDown(colour, row+1, col))){
-			dead.put(row*this.boardDims + col, Piece.INVALID);
+			dead.clear();
 			return false;
 		}
 		
@@ -342,9 +355,9 @@ public class Board {
 	}
 	
 	/** updates the board data to include the newly captured (dead) cells */
-	public void update(){
+	public void update(Board b){
 		int cell_is_dead = 0;
-		int[][] cells = getCells();
+		int[][] cells = b.getCells();
 		
 	
 		for(int i=0; i<this.boardDims; i++) {
@@ -365,6 +378,7 @@ public class Board {
 				}	
 			}
 		}
+		b.setCells(cells);
 	}
 
 	/** Prints the board configuration to standard output */
