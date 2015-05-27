@@ -49,7 +49,7 @@ public class RandomRick extends LukeMason{
 		board.setCells(currentBoard);
 		
 		board.floodfill(move);
-		board.updateDead();
+		board.update();
 		return move;
 	}
 	

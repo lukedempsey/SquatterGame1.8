@@ -182,74 +182,187 @@ public class Board {
 	*/
 	public void floodfill(Move m){
 		dead.clear();
-		
-		int colour = m.P;
-		int row = m.Row;
-		int col = m.Col;
-			
+	
 		// check all the adjacent cells
-		findNext(colour, row-1, col);
-		findNext(colour, row+1, col);
-		findNext(colour, row, col+1);
-		findNext(colour, row, col-1);
+		findNextUp(m.P, m.Row-1, m.Col);
+		findNextDown(m.P, m.Row+1, m.Col);
+		findNextLeft(m.P, m.Row, m.Col-1);
+		findNextRight(m.P, m.Row, m.Col+1);
 		
 	}
 	
-	/** Looks at the next cell in the board and recursively finds it's dead
+	/** Looks at the above cell in the board and finds if it's dead
 	 * @param colour the colour most recently placed (doing the capturing)
 	 * @param row the row location in the board
 	 * @param col the column location in the board
 	 * @return whether or not this cell is dead (captured)
 	 */
-	public boolean findNext(int colour, int row, int col) {
+	public boolean findNextUp(int colour, int row, int col) {
 		
-		// checks if the cell is out of bounds
-		if(row<0|col<0|row>=this.boardDims|col>=this.boardDims) {
+		//if the row and col index is out of bounds
+		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
 			return false;
-		} // check if this cell has been visited already
-		else if (dead.containsKey((row)*(this.boardDims)+(col))){
+		} // if its a cell capturing the current arrangement
+		else if(this.cells[row][col] == colour) {
 			return true;
-		} // check if this cell one of the capturing cells (a boundary)
-		else if (this.cells[row][col] == colour) {
-			return true;
-		}
-		// assume cell is dead (visited)
-		dead.put((row)*(this.boardDims)+(col), Piece.DEAD);
-		
-		// check the surrounding cells
-		boolean up = findNext(colour, row-1, col);
-		boolean right = findNext(colour, row, col+1);
-		boolean left = findNext(colour, row, col-1);
-		boolean down = findNext(colour, row+1, col);
-		
-		// cell is captured
-		if (up & down & left & right) {
+		} // check if cell has already been visited
+		else if(dead.containsKey(row*this.boardDims + col)) {
 			return true;
 		}
 		
-		// isn't captured, change from visited to not dead
-		dead.replace((row)*(this.boardDims)+(col), Piece.INVALID);
-		return false;
+		//if haven't been here, go here
+		dead.put(row*this.boardDims + col, Piece.DEAD);
+		
+		if(!(findNextUp(colour, row-1, col))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		if(!(findNextLeft(colour, row, col-1))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		if(!(findNextRight(colour, row, col+1))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/** Looks at the above cell in the board and finds if it's dead
+	 * @param colour the colour most recently placed (doing the capturing)
+	 * @param row the row location in the board
+	 * @param col the column location in the board
+	 * @return whether or not this cell is dead (captured)
+	 */
+	public boolean findNextDown(int colour, int row, int col) {
+		
+		//if the row and col index is out of bounds
+		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
+			return false;
+		} // if its a cell capturing the current arrangement
+		else if(this.cells[row][col] == colour) {
+			return true;
+		} // check if cell has already been visited
+		else if(dead.containsKey(row*this.boardDims + col)) {
+			return true;
+		}
+		
+		//if haven't been here, go here
+		dead.put(row*this.boardDims + col, Piece.DEAD);
+		
+		if(!(findNextDown(colour, row+1, col))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		if(!(findNextLeft(colour, row, col-1))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		if(!(findNextRight(colour, row, col+1))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/** Looks at the above cell in the board and finds if it's dead
+	 * @param colour the colour most recently placed (doing the capturing)
+	 * @param row the row location in the board
+	 * @param col the column location in the board
+	 * @return whether or not this cell is dead (captured)
+	 */
+	public boolean findNextLeft(int colour, int row, int col) {
+		
+		//if the row and col index is out of bounds
+		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
+			return false;
+		} // if its a cell capturing the current arrangement
+		else if(this.cells[row][col] == colour) {
+			return true;
+		} // check if cell has already been visited
+		else if(dead.containsKey(row*this.boardDims + col)) {
+			return true;
+		}
+		
+		//if haven't been here, go here
+		dead.put(row*this.boardDims + col, Piece.DEAD);
+		
+		if(!(findNextLeft(colour, row, col-1))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		if(!(findNextUp(colour, row-1, col))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		if(!(findNextDown(colour, row+1, col))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/** Looks at the above cell in the board and finds if it's dead
+	 * @param colour the colour most recently placed (doing the capturing)
+	 * @param row the row location in the board
+	 * @param col the column location in the board
+	 * @return whether or not this cell is dead (captured)
+	 */
+	public boolean findNextRight(int colour, int row, int col) {
+		
+		//if the row and col index is out of bounds
+		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
+			return false;
+		} // if its a cell capturing the current arrangement
+		else if(this.cells[row][col] == colour) {
+			return true;
+		} // check if cell has already been visited
+		else if(dead.containsKey(row*this.boardDims + col)) {
+			return true;
+		}
+		
+		//if haven't been here, go here
+		dead.put(row*this.boardDims + col, Piece.DEAD);
+		
+		if(!(findNextRight(colour, row, col+1))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		if(!(findNextUp(colour, row-1, col))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		if(!(findNextDown(colour, row+1, col))){
+			dead.put(row*this.boardDims + col, Piece.INVALID);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/** updates the board data to include the newly captured (dead) cells */
-	public void updateDead(){
+	public void update(){
+		int cell_is_dead = 0;
+		int[][] cells = getCells();
+		
 	
 		for(int i=1; i<this.boardDims-1; i++) {
 			for(int j =1; j<this.boardDims-1; j++) {
 				
-				// check is the piece was visited by the floodfill
-				int tmp = dead.getOrDefault((i)*(this.boardDims)+(j), Piece.INVALID);
+				//check if the cell is dead
+				cell_is_dead = dead.getOrDefault(i*this.boardDims + j, Piece.INVALID);
 				
 				// if its dead, change the board
-				if(tmp == Piece.DEAD) {
-					System.out.println(i+" "+j);
-					if(getCells()[i][j]==Piece.WHITE) {
-						getCells()[i][j] = CustomPiece.DEADWHITE;
-					} else if(getCells()[i][j]==Piece.BLACK) {
-						getCells()[i][j] = CustomPiece.DEADBLACK;
-					} else if(getCells()[i][j]==Piece.EMPTY) {
-						getCells()[i][j] = CustomPiece.DEADSPACE;
+				if(cell_is_dead == Piece.DEAD) {
+					if(cells[i][j]==Piece.WHITE) {
+						cells[i][j] = CustomPiece.DEADWHITE;
+					} else if(cells[i][j]==Piece.BLACK) {
+						cells[i][j] = CustomPiece.DEADBLACK;
+					} else if(cells[i][j]==Piece.EMPTY) {
+						cells[i][j] = CustomPiece.DEADSPACE;
 					}
 				}	
 			}
@@ -258,11 +371,11 @@ public class Board {
 
 	/** Prints the board configuration to standard output */
 	public void printBoard(){
-		int dims = this.boardDims;
-		for(int i=0; i<dims; i++){
-			for(int j=0; j<dims; j++){
-				int tmp = getCells()[i][j];
-				switch(tmp) {
+		int cell = 0;
+		for(int i=0; i<this.boardDims; i++){
+			for(int j=0; j<this.boardDims; j++){
+				cell = getCells()[i][j];
+				switch(cell) {
 				case Piece.EMPTY:
 					System.out.print("+");
 					break;
@@ -282,7 +395,8 @@ public class Board {
 					System.out.print("b");
 					break;
 				case Piece.INVALID:
-					System.out.print("Invalid board data. Probs Check that");
+					System.out.print("Invalid piece on board.  terminating");
+					System.exit(0);
 					break;
 				}
 			}
