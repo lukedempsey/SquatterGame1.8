@@ -14,8 +14,8 @@ public class RandomRick extends LukeMason{
 		int dim = board.getBoardDims();
 		int move_coords[] = {0,0};
 		
-		int i = (int) Math.ceil((dim-1)*Math.random());
-		int j = (int) Math.ceil((dim-1)*Math.random());
+		int i = (int) Math.ceil((dim)*Math.random()-1);
+		int j = (int) Math.ceil((dim)*Math.random()-1);
 		
 		if (currentBoard[i][j]!=Piece.EMPTY){
 			return makeRandMove();
