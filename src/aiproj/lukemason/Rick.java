@@ -19,7 +19,7 @@ public class Rick extends LukeMason{
 			return makeRandMove();
 		}
 		
-		move_coords[0] =i ;
+		move_coords[0] = i;
 		move_coords[1] = j;
 		
 		return move_coords;
