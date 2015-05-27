@@ -70,7 +70,6 @@ public class Referee implements Piece{
 				System.exit(1);
 			}
 			}
-			
 		}
 		System.out.println("--------------------------------------");
 		System.out.println("P2 Board is :");

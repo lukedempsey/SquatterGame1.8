@@ -47,7 +47,7 @@ public class Rick extends LukeMason{
 		board.setCells(currentBoard);
 		
 		board.floodfill(move);
-		board.updateDead();
+		board.update();
 		return move;
 	}
 	

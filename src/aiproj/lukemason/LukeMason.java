@@ -69,7 +69,7 @@ public class LukeMason implements Player, Piece {
 					board.setCells(currentBoard);
 					// check for newly captured cells
 					board.floodfill(move);
-					board.updateDead();
+					board.update();
 					return move;
 				}
 			}
@@ -108,7 +108,7 @@ public class LukeMason implements Player, Piece {
 		
 		// check for newly captured cells
 		board.floodfill(m);
-		board.updateDead();
+		board.update();
 		
 		return 0;
 	}
