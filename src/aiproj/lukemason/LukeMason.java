@@ -67,6 +67,9 @@ public class LukeMason implements Player, Piece {
 					move.P = this.playerColour;	
 					currentBoard[i][j] = this.playerColour;
 					board.setCells(currentBoard);
+					// check for newly captured cells
+					board.floodfill(move);
+					board.updateDead();
 					return move;
 				}
 			}
@@ -105,6 +108,7 @@ public class LukeMason implements Player, Piece {
 		
 		// check for newly captured cells
 		board.floodfill(m);
+		board.updateDead();
 		
 		return 0;
 	}

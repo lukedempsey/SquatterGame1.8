@@ -15,9 +15,8 @@ import aiproj.squatter.*;
  * 		for us - did we capture more cells?
  * 		for them - did they capture no cells (we block them), or atleast less than us?
  * connecting the pieces
- * 		for us - did we make a longer chain of pieces?
- *  	for them - did we 
- *
+ * 		for us - did we put a piece next to our piece?
+ *  	for them - not sure what just yet...
  */
 
 public class Heuristic {

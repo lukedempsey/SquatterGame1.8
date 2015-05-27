@@ -45,6 +45,9 @@ public class Rick extends LukeMason{
 		move.P = this.playerColour;
 		currentBoard[tmp_move[0]][tmp_move[1]] = this.playerColour;
 		board.setCells(currentBoard);
+		
+		board.floodfill(move);
+		board.updateDead();
 		return move;
 	}
 	
