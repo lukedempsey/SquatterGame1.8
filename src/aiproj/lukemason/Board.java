@@ -349,8 +349,8 @@ public class Board {
 		int[][] cells = getCells();
 		
 	
-		for(int i=1; i<this.boardDims-1; i++) {
-			for(int j =1; j<this.boardDims-1; j++) {
+		for(int i=0; i<this.boardDims; i++) {
+			for(int j =0; j<this.boardDims; j++) {
 				
 				//check if the cell is dead
 				cell_is_dead = dead.getOrDefault(i*this.boardDims + j, Piece.INVALID);
