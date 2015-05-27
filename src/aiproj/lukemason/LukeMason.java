@@ -58,7 +58,7 @@ public class LukeMason implements Player, Piece {
 
 		Move move = new Move();
 		move = minimax(board, this.depth, true, 0).getMove();
-		board.placeMove(board, move);	
+		board.placeMove(board, move);
 		return move;
 	}
 
@@ -93,8 +93,7 @@ public class LukeMason implements Player, Piece {
 		board.setCells(currentBoard);
 		
 		// check for newly captured cells
-		board.floodfill(m);
-		board.update();
+		board.placeMove(board, m);
 		
 		return 0;
 	}
@@ -140,6 +139,7 @@ public class LukeMason implements Player, Piece {
 		//TODO add end game functionality (util)
 		
 		if (depth==0){
+			System.out.println("heuristic"+heuristic(board));
 			return new Minimax(heuristic(board));
 		}
 		
@@ -234,7 +234,7 @@ public class LukeMason implements Player, Piece {
 	public double heuristic(Board board){
 		double h = 0;
 		h+=liberties(board);
-		h+=aliveDead(board);
+		//h+=aliveDead(board);
 		//System.out.println("$$$Heuristic:  "+h);
 		return h;
 	}
