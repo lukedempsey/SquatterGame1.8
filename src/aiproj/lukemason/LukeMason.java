@@ -139,7 +139,7 @@ public class LukeMason implements Player, Piece {
 		//TODO add end game functionality (util)
 		
 		if (depth==0){
-			System.out.println("heuristic"+heuristic(board));
+			//System.out.println("heuristic"+heuristic(board));
 			return new Minimax(heuristic(board));
 		}
 		
@@ -233,7 +233,7 @@ public class LukeMason implements Player, Piece {
 	
 	public double heuristic(Board board){
 		double h = 0;
-		h+=liberties(board);
+		h+=100*liberties(board);
 		//h+=aliveDead(board);
 		//System.out.println("$$$Heuristic:  "+h);
 		return h;
