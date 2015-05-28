@@ -187,11 +187,14 @@ public class LukeMason implements Player, Piece {
 		int dims = board.getBoardDims();
 		Move optimalMove = null;
 		
-		//TODO add end game functionality (util)
+		if (board.checkGameOver(board)){
+			Minimax util = new Minimax(utility(board));
+			return util;
+		}
 		
 		if (depth==0){
-			//System.out.println("heuristic"+heuristic(board));
-			return new Minimax(heuristic(board));
+			Minimax heuristic = new Minimax(heuristic(board));
+			return heuristic;
 		}
 		
 		//check for legal moves in all cells
@@ -238,7 +241,8 @@ public class LukeMason implements Player, Piece {
 				
 			}
 		}
-		return new Minimax(optimalMove, curVal);
+		Minimax out = new Minimax(optimalMove, curVal);
+		return out;
 	}
 	
 	public double adjacentSpace(int row, int col, int colour, int[][] cells){
