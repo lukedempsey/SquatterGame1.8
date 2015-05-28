@@ -2,6 +2,8 @@ package aiproj.lukemason;
 
 import aiproj.squatter.Move;
 
+/** @author lukedempsey 638407, mason rose-campbell 638370 */
+
 //for output of minimax
 public class Minimax {
 	
