@@ -25,7 +25,12 @@ public class LukeMason implements Player, Piece {
 	private int tallyW = 0;
 	private Boolean gameOver = false;	
 	
-	
+	/**Initialise the player
+	 * @param n Board Dimensions
+	 * @param player integer
+	 * 
+	 * if invalid input, return -1
+	 */
 	@Override
 	public int init(int n, int p) {
 
@@ -45,7 +50,11 @@ public class LukeMason implements Player, Piece {
 		return 0;
 	}
 
-	
+	/**
+	 * Return the integer corresponding the other player
+	 * @param player - integer corresponding to current player
+	 * @return
+	 */
 	public int getOtherPlayer(int player){
 		if (player==1){
 			return 2;
@@ -53,6 +62,11 @@ public class LukeMason implements Player, Piece {
 		return 1;
 	}
 	
+	/**
+	 * Performs a move of best choice by running through minimax and
+	 * comparing heuristic values for different outcomes
+	 * return move object
+	 */
 	@Override
 	public Move makeMove() {
 
@@ -62,7 +76,11 @@ public class LukeMason implements Player, Piece {
 		return move;
 	}
 
-	/**Check a move will be valid */
+	/**
+	 * Checks that an intended move is legal
+	 * @param m - Move object describing intended move
+	 * @return True if legal, False if illegal
+	 */
 	public boolean checkMove(Move m){
 		int[][] currentBoard = board.getCells();
 
@@ -76,6 +94,11 @@ public class LukeMason implements Player, Piece {
 		return true;
 	}
 	
+	/**
+	 * Checks legality of opponent's move. If move illegal return -1.
+	 * If legal, add to our board.
+	 * @param m - Opponents move
+	 */
 	@Override
 	public int opponentMove(Move m) {				
 		int[][] currentBoard = board.getCells();
@@ -98,6 +121,10 @@ public class LukeMason implements Player, Piece {
 		return 0;
 	}
 
+	/**
+	 * Update the game state
+	 * @return - winner
+	 */
 	@Override
 	public int getWinner() {
 
@@ -105,14 +132,25 @@ public class LukeMason implements Player, Piece {
 		board.state(board, this);
 		
 		//was this.tally but changed it because no method was updating it
-		return board.returnWinner(gameOver, board.getTallyB(), board.getTallyW());
+		return board.returnWinner(gameOver, board.getTallyB(),
+				board.getTallyW());
 	}
 	
+	/**
+	 * Print the board's contents to output
+	 * @param output - where to print the contents to
+	 */
 	@Override
 	public void printBoard(PrintStream output) {
 		board.printBoard();
 	}
 		
+	/**
+	 * Utility function for when the minimax gets to an end of
+	 * game scenario
+	 * @param board
+	 * @return utility value
+	 */
 	public double utility(Board board){
 		if (board.getTallyW()<board.getTallyB()){
 			if (this.getPlayerColour() == board.getTallyW()){
@@ -130,6 +168,19 @@ public class LukeMason implements Player, Piece {
 		}
 	}
 	
+	/**
+	 * Binary tree used for evaluating different moves and their effect
+	 * on the game.
+	 * @param board - the current node in the tree. At first call, this will
+	 * be the player's board
+	 * @param depth - max depth to search. Eg: depth of 2 will look ahead
+	 * 2 moves
+	 * @param max - corresponding to the state of the level we are currently
+	 * at in the tree Min, or Max. At first call, this will be Max
+	 * @param cur_optimal - The value of the current best move which can be
+	 * compared to by a new move
+	 * @return
+	 */
 	public Minimax minimax(Board board, int depth, boolean max, double cur_optimal){
 		double curVal = Double.NaN; //initialise currentvalue
 		double val;
@@ -190,46 +241,6 @@ public class LukeMason implements Player, Piece {
 		return new Minimax(optimalMove, curVal);
 	}
 	
-	public int getTallyB() {
-		return tallyB;
-	}
-	
-	public void setTallyB(int tallyB) {
-		this.tallyB = tallyB;
-	}
-	
-	public int getTallyW() {
-		return tallyW;
-	}
-	
-	public void setTallyW(int tallyW) {
-		this.tallyW = tallyW;
-	}
-	
-	public Boolean getGameOver() {
-		return gameOver;
-	}
-	
-	public void setGameOver(Boolean gameOver) {
-		this.gameOver = gameOver;
-	}
-	
-	public int getPlayerColour() {
-		return playerColour;
-	}
-	
-	public void setPlayerColour(int playerColour) {
-		this.playerColour = playerColour;
-	}
-
-	public int getOpponentColour() {
-		return opponentColour;
-	}
-
-	public void setOpponentColour(int opponentColour) {
-		this.opponentColour = opponentColour;
-	}
-	
 	public double adjacentSpace(int row, int col, int colour, int[][] cells){
 		double playerSpace = 0.0;
 		
@@ -251,6 +262,11 @@ public class LukeMason implements Player, Piece {
 		return playerSpace;
 	}
 	
+	/**
+	 * Calculates the value of the move given heuristic formulae
+	 * @param thisBoard - Board containing updated move to be evaluated
+	 * @return heuristic - Value of board
+	 */
 	public double heuristic(Board thisBoard){
 		double h = 0;
 		int dim = thisBoard.getBoardDims();
@@ -312,18 +328,6 @@ public class LukeMason implements Player, Piece {
 			int playerDiags=0, opponentDiags=0;
 			int playerAdjs=0, opponentAdjs=0;
 			
-			/**for (int x=0; x<thisBoard.getBoardDims(); x++){
-				for (int y=0; y<thisBoard.getBoardDims(); y++){
-					System.out.print(cells[x][y]);
-				}
-				System.out.println("");
-			}*/
-			
-			//System.out.println("Diagonal Board");
-			//thisBoard.printBoard(thisBoard);
-			//thisBoard.printBoard();
-			
-
 			//Diagonals:
 			for(int i=-1; i<=1; i+=2){
 				for(int j=-1; j<=1; j+=2){
@@ -363,26 +367,9 @@ public class LukeMason implements Player, Piece {
 		return (2*(playerDiags - opponentDiags)+(playerAdjs+opponentAdjs));
 	}
 	
-	
-	/**
-	 * Calculates the alive/dead factor
-	 * @return 
-	 */
-	public int aliveDead(Board board){
-		int white = board.getTallyW();
-		int black = board.getTallyB();
-		
-		if (this.getPlayerColour()==Piece.WHITE){
-			return white - black;
-		}else{
-			return black - white;
-		}
-	}
-	
 	/**
 	 * finds the amount of adjacent real-estate for each player
-	 * @param board
-	 * @param player
+	 * @param board - board to be evaluated
 	 * @return current players real-estate minus the opponents
 	 */
 	public int liberties(Board board){
@@ -408,7 +395,7 @@ public class LukeMason implements Player, Piece {
 									}else if(cells[i][j]==this.getOpponentColour()){
 										lib_opponent++;
 									}else{
-										//TODO change this
+										
 									}
 								}
 							}catch (ArrayIndexOutOfBoundsException e){
@@ -420,12 +407,47 @@ public class LukeMason implements Player, Piece {
 		}
 		return lib_player - lib_opponent;
 	}
-
-	public int stoneConnect(){
-		//TODO
-		
-		return 0;
+	
+	public int getTallyB() {
+		return tallyB;
 	}
+	
+	public void setTallyB(int tallyB) {
+		this.tallyB = tallyB;
+	}
+	
+	public int getTallyW() {
+		return tallyW;
+	}
+	
+	public void setTallyW(int tallyW) {
+		this.tallyW = tallyW;
+	}
+	
+	public Boolean getGameOver() {
+		return gameOver;
+	}
+	
+	public void setGameOver(Boolean gameOver) {
+		this.gameOver = gameOver;
+	}
+	
+	public int getPlayerColour() {
+		return playerColour;
+	}
+	
+	public void setPlayerColour(int playerColour) {
+		this.playerColour = playerColour;
+	}
+
+	public int getOpponentColour() {
+		return opponentColour;
+	}
+
+	public void setOpponentColour(int opponentColour) {
+		this.opponentColour = opponentColour;
+	}
+	
 }
 
 	
