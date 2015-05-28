@@ -131,7 +131,7 @@ public class LukeMason implements Player, Piece {
 	}
 	
 	public Minimax minimax(Board board, int depth, boolean max, double cur_optimal){
-		double curVal = Double.NaN;
+		double curVal = Double.NaN; //initialise currentvalue
 		double val;
 		int dims = board.getBoardDims();
 		Move optimalMove = null;
@@ -161,11 +161,12 @@ public class LukeMason implements Player, Piece {
 					
 					//Clone board and play move
 					Board tmpBoard = new Board(board.getBoardDims());
-					tmpBoard.fillBoard(board.getCells(), board.getDead());
+					tmpBoard.fillBoard(board.getCells(board), board.getDead());
 					tmpBoard.placeMove(tmpBoard, move);
 					
 					//Call minimax
 					if (max){
+						//return value of next level of simulation
 						val = minimax(tmpBoard, depth-1, false, curVal).getValue();
 						
 						//if the value is better, update it
@@ -229,17 +230,139 @@ public class LukeMason implements Player, Piece {
 		this.opponentColour = opponentColour;
 	}
 	
+	public double adjacentSpace(int row, int col, int colour, int[][] cells){
+		double playerSpace = 0.0;
+		
+		//checking adjacent cells
+		for(int adj_r=-1; adj_r<1; adj_r++){
+			for(int adj_c=-1; adj_c<1; adj_c++){
+				if(colour==Piece.WHITE){
+					if (cells[row+adj_r][col+adj_c] == Piece.EMPTY || cells[row+adj_r][col+adj_c] == Piece.WHITE){
+						playerSpace += 0.5;
+					}
+				} else {
+					if (cells[row+adj_r][col+adj_c] == Piece.EMPTY || cells[row+adj_r][col+adj_c] == Piece.BLACK){
+						playerSpace += 0.5;
+					}
+				}
+			
+			}
+		}
+		return playerSpace;
+	}
 	
-	
-	public double heuristic(Board board){
+	public double heuristic(Board thisBoard){
 		double h = 0;
-		h+=100*liberties(board);
-		//h+=aliveDead(board);
-		//System.out.println("$$$Heuristic:  "+h);
+		int dim = thisBoard.getBoardDims();
+		int[][]cells = thisBoard.getCells(thisBoard);
+		int ourColour = this.getPlayerColour();
+		int theirColour = this.getOpponentColour();
+		int playerDead=0, opponentDead=0, spaceDead=0;
+		double playerSpace=0, opponentSpace=0;
+		
+		
+		for (int i=1; i<dim-1; i++){
+			for(int j=1; j<dim-1; j++){
+				
+				//Dead cells
+				if (cells[i][j] == CustomPiece.DEADWHITE){
+					if (ourColour==Piece.WHITE){
+						playerDead++;
+						//System.out.println("KILLED");
+					}else{
+						opponentDead++;
+					}
+				}else if (cells[i][j] == CustomPiece.DEADBLACK){
+					if (ourColour==Piece.BLACK){
+						playerDead++;
+					}else{
+						opponentDead++;
+						//System.out.println("KILL");
+					}
+				}else if (cells[i][j] == Piece.DEAD){
+					//captured empty cells
+					spaceDead++;
+				}
+				
+				//how much space player has (small weight)
+				if(cells[i][j]==ourColour){
+					playerSpace = adjacentSpace(i, j, ourColour, cells);
+				} else if (cells[i][j]==theirColour){
+					opponentSpace = adjacentSpace(i, j, theirColour, cells);
+				}
+				
+				//Diagonals
+				h+=diagonals(thisBoard, i, j);
+			}
+		}
+		
+		h+=20*opponentDead;
+		h-=20*playerDead;
+		h+=20*spaceDead;
+		h+=0.5*playerSpace;
+		h-=0.75*opponentSpace;
+		//System.out.println("\n" +  h + "\n");
 		return h;
 	}
 	
+	
+	
+	public int diagonals(Board thisBoard, int row, int col){
+			int[][]cells = thisBoard.getCells(thisBoard);
+			int playerDiags=0, opponentDiags=0;
+			int playerAdjs=0, opponentAdjs=0;
+			
+			/**for (int x=0; x<thisBoard.getBoardDims(); x++){
+				for (int y=0; y<thisBoard.getBoardDims(); y++){
+					System.out.print(cells[x][y]);
+				}
+				System.out.println("");
+			}*/
+			
+			//System.out.println("Diagonal Board");
+			//thisBoard.printBoard(thisBoard);
+			//thisBoard.printBoard();
+			
 
+			//Diagonals:
+			for(int i=-1; i<=1; i+=2){
+				for(int j=-1; j<=1; j+=2){
+					if (cells[row+i][col+j]==this.playerColour){
+						//System.out.println("Player Diagonal Found at: "+(row+i)+","+(col+j)+"from"+row+","+col);
+						//thisBoard.printBoard();
+						playerDiags++;
+					}else if (cells[row-1][col-j]==this.opponentColour){
+						opponentDiags++;
+					}
+				}
+			}
+			
+			//Perpendicular +ve weight a little
+			if (cells[row-1][col]==this.playerColour){
+				playerAdjs++;
+			}else if (cells[row-1][col]==this.opponentColour){
+				opponentAdjs++;
+			}
+			if (cells[row+1][col]==this.playerColour){
+				playerAdjs++;
+			}else if (cells[row+1][col]==this.opponentColour){
+				opponentAdjs++;
+			}
+			if (cells[row][col-1]==this.playerColour){
+				playerAdjs++;
+			}else if (cells[row][col-1]==this.opponentColour){
+				opponentAdjs++;
+			}
+			if (cells[row][col+1]==this.playerColour){
+				playerAdjs++;
+			}else if (cells[row][col+1]==this.opponentColour){
+				opponentAdjs++;
+			}
+			
+			//System.out.println("Player Diagonals: "+playerDiags+"  Opponent Diagonals: "+opponentDiags);
+		return (2*(playerDiags - opponentDiags)+(playerAdjs+opponentAdjs));
+	}
+	
 	
 	/**
 	 * Calculates the alive/dead factor

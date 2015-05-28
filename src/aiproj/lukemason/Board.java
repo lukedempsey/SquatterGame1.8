@@ -126,17 +126,11 @@ public class Board {
 	
 	//Places a piece at an inputted location
 	public Board placeMove(Board b, Move m){
-		//System.out.println("begin placemove");
 		int[][] localBoard = b.getCells();
 		localBoard[m.Row][m.Col] = m.P;
-		//System.out.println("print board");
 		b.setCells(localBoard);
-		//b.printBoard();
-		//System.out.println("---");
 		b.floodfill(m);
-		//System.out.println(dead);
 		b.update(b);
-		//b.printBoard();
 		return b;
 	}
 
@@ -389,22 +383,56 @@ public class Board {
 				cell = getCells()[i][j];
 				switch(cell) {
 				case Piece.EMPTY:
-					System.out.print("+");
+					System.out.print("+ ");
 					break;
 				case Piece.WHITE:
-					System.out.print("W");
+					System.out.print("W ");
 					break;
 				case Piece.BLACK:
-					System.out.print("B");
+					System.out.print("B ");
 					break;
 				case CustomPiece.DEADSPACE:
-					System.out.print("-");
+					System.out.print("- ");
 					break;
 				case CustomPiece.DEADWHITE:
-					System.out.print("w");
+					System.out.print("w ");
 					break;
 				case CustomPiece.DEADBLACK:
-					System.out.print("b");
+					System.out.print("b ");
+					break;
+				case Piece.INVALID:
+					System.out.print("Invalid piece on board.  terminating");
+					System.exit(0);
+					break;
+				}
+			}
+		System.out.print("\n");
+		}
+	}
+	
+	public void printBoard(Board b){
+		int cell = 0;
+		for(int i=0; i<b.boardDims; i++){
+			for(int j=0; j<b.boardDims; j++){
+				cell = b.getCells()[i][j];
+				switch(cell) {
+				case Piece.EMPTY:
+					System.out.print("+ ");
+					break;
+				case Piece.WHITE:
+					System.out.print("W ");
+					break;
+				case Piece.BLACK:
+					System.out.print("B ");
+					break;
+				case CustomPiece.DEADSPACE:
+					System.out.print("- ");
+					break;
+				case CustomPiece.DEADWHITE:
+					System.out.print("w ");
+					break;
+				case CustomPiece.DEADBLACK:
+					System.out.print("b ");
 					break;
 				case Piece.INVALID:
 					System.out.print("Invalid piece on board.  terminating");
@@ -430,6 +458,17 @@ public class Board {
 		for (int i=0; i< this.getBoardDims(); i++){
 			for (int j=0; j < this.getBoardDims(); j++){
 				output[i][j] = this.cells[i][j];
+			}
+		}
+		return output;
+	}
+	
+	public int[][] getCells(Board b) {
+		int[][]output = new int[b.getBoardDims()][b.getBoardDims()];
+		
+		for (int i=0; i< b.getBoardDims(); i++){
+			for (int j=0; j < b.getBoardDims(); j++){
+				output[i][j] = b.cells[i][j];
 			}
 		}
 		return output;
