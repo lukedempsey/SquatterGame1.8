@@ -57,11 +57,11 @@ public class LukeMason implements Player, Piece {
 	 * @param dim
 	 */
 	public void alterDepth(int dim){
-		if (dim<=7){
+		if (dim<=6){
 			setDepth(3);
-		}else if (dim>7){
+		}else if (dim>=7){
 			setDepth(2);
-		}else{
+		}else {
 			setDepth(1);
 		}
 		
@@ -86,7 +86,6 @@ public class LukeMason implements Player, Piece {
 	 */
 	@Override
 	public Move makeMove() {
-		System.out.println("Depth: "+depth);
 		Move move = new Move();
 		move = minimax(board, this.depth, true, 0).getMove();
 		board.placeMove(board, move);
@@ -159,7 +158,7 @@ public class LukeMason implements Player, Piece {
 	 */
 	@Override
 	public void printBoard(PrintStream output) {
-		board.printBoard();
+		board.printBoard(output);
 	}
 		
 	/**

@@ -1,6 +1,7 @@
 package aiproj.lukemason;
 import aiproj.squatter.*;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 
 /** @author lukedempsey 638407, mason rose-campbell 638370 */
@@ -206,9 +207,17 @@ public class Board {
 		
 		// check all the adjacent cells
 		findNextUp(m.P, m.Row, m.Col);
+		update(this);
+		dead.clear();
 		findNextDown(m.P, m.Row, m.Col);
+		update(this);
+		dead.clear();
 		findNextLeft(m.P, m.Row, m.Col);
+		update(this);
+		dead.clear();
 		findNextRight(m.P, m.Row, m.Col);
+		update(this);
+		dead.clear();
 	}
 	
 	/** Looks at the above cell in the board and finds if it's dead
@@ -392,69 +401,32 @@ public class Board {
 	}
 
 	/** Prints the board configuration to standard output */
-	public void printBoard(){
+	public void printBoard(PrintStream output){
 		int cell = 0;
 		for(int i=0; i<this.boardDims; i++){
 			for(int j=0; j<this.boardDims; j++){
 				cell = getCells()[i][j];
 				switch(cell) {
 				case Piece.EMPTY:
-					System.out.print("+ ");
+					output.print("+ ");
 					break;
 				case Piece.WHITE:
-					System.out.print("W ");
+					output.print("W ");
 					break;
 				case Piece.BLACK:
-					System.out.print("B ");
+					output.print("B ");
 					break;
 				case CustomPiece.DEADSPACE:
-					System.out.print("- ");
+					output.print("- ");
 					break;
 				case CustomPiece.DEADWHITE:
-					System.out.print("w ");
+					output.print("w ");
 					break;
 				case CustomPiece.DEADBLACK:
-					System.out.print("b ");
+					output.print("b ");
 					break;
 				case Piece.INVALID:
-					System.out.print("Invalid piece on board.  terminating");
-					System.exit(0);
-					break;
-				}
-			}
-		System.out.print("\n");
-		}
-	}
-	
-	/** SORT THIS OUT!!!!!!! PRINT STREAAAAAAAMMMMMMMMMMMMMMMMM
-	 * @param b
-	 */
-	public void printBoard(Board b){
-		int cell = 0;
-		for(int i=0; i<b.boardDims; i++){
-			for(int j=0; j<b.boardDims; j++){
-				cell = b.getCells()[i][j];
-				switch(cell) {
-				case Piece.EMPTY:
-					System.out.print("+ ");
-					break;
-				case Piece.WHITE:
-					System.out.print("W ");
-					break;
-				case Piece.BLACK:
-					System.out.print("B ");
-					break;
-				case CustomPiece.DEADSPACE:
-					System.out.print("- ");
-					break;
-				case CustomPiece.DEADWHITE:
-					System.out.print("w ");
-					break;
-				case CustomPiece.DEADBLACK:
-					System.out.print("b ");
-					break;
-				case Piece.INVALID:
-					System.out.print("Invalid piece on board.  terminating");
+					System.out.print("Invalid piece on board. Terminating");
 					System.exit(0);
 					break;
 				}
