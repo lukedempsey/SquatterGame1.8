@@ -11,7 +11,6 @@ import aiproj.squatter.*;
  * for optimization, try to make faster by not running certain factors for the first few moves
  * 
  * liberties (free spaces adjacent)
-<<<<<<< Updated upstream
  * 		for us - did this move remain mostly uncaptured?
  * 		for them - did our move encapsulate as much of them?
  * alive/dead
@@ -23,11 +22,7 @@ import aiproj.squatter.*;
 =======
  * 		free space adjacent to cells, weighted low. 
  * 		aim is there will be more free space as the capturer than the captured
- * alive/dead
- * 		
- * connecting the stones
  *
->>>>>>> Stashed changes
  */
 
 //try huddling all in a corner as a dumb technique

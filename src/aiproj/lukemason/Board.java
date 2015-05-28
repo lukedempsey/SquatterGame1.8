@@ -10,8 +10,6 @@ public class Board {
 	private int[][] cells = null;
 	private HashMap<Integer, Integer> dead = null;
 	
-	
-
 	/** Creates a new Board object
 	 * @param n board dimensions as an int
 	 */
@@ -28,7 +26,6 @@ public class Board {
 		fillBoard();
 
 	}
-	
 
 	/** Finds the current game state (the scores of each player) by searching
 	 *  through the board
@@ -57,13 +54,15 @@ public class Board {
 					}	
 					
 				//Check captured white pieces
-				} else if(board.getCells()[row][col]==(CustomPiece.DEADWHITE)){
+				} else if(board.getCells()[row][col]==(CustomPiece.DEADWHITE))
+					{
 					if(lastCol==CustomPiece.BLACK){
 						player.setTallyB(player.getTallyB() + 1);
 					}
 					
 				//Check captured black pieces
-				} else if(board.getCells()[row][col]==(CustomPiece.DEADBLACK)){
+				} else if(board.getCells()[row][col]==(CustomPiece.DEADBLACK))
+					{
 					if(lastCol==CustomPiece.WHITE){
 						player.setTallyW(player.getTallyW() + 1);
 					}
@@ -75,7 +74,6 @@ public class Board {
 			}
 		}
 	}
-	
 	
 	/** Fills the initialised board with empty cells */
 	public void fillBoard() {
@@ -89,6 +87,9 @@ public class Board {
 		
 	}
 	
+	/** Finds current tally for White player
+	 * @return tally of white pieces
+	 */
 	public int getTallyW(){
 		int tally = 0;
 		int[][]cells = this.getCells();
@@ -102,6 +103,9 @@ public class Board {
 		return tally;
 	}
 	
+	/** Finds current tally for Black player
+	 * @return tally of black cells
+	 */
 	public int getTallyB(){
 		int tally = 0;
 		int[][]cells = this.getCells();
@@ -115,8 +119,11 @@ public class Board {
 		return tally;
 	}
 	
-	/** Fills the initialised board cells inputted */
-	public void fillBoard(int[][] contents, HashMap<Integer, Integer> deadIn) {
+	/** Fills the initialised board cells inputted 
+	 * @param contents board cells to copy into the new board
+	 * @param deadIn dead cell hashmap to copy in
+	 */
+	public void fillBoard(int[][] contents, HashMap<Integer, Integer> deadIn){
 		
 		// initialise board elements to empty
 		cells = contents;
@@ -124,13 +131,22 @@ public class Board {
 		
 	}
 	
-	//Places a piece at an inputted location
+	/** Places a move on the board and updates it
+	 * @param b Board being played on
+	 * @param m Move most recently played
+	 * @return b updated board
+	 */
 	public Board placeMove(Board b, Move m){
 		int[][] localBoard = b.getCells();
+		
+		//introduce move
 		localBoard[m.Row][m.Col] = m.P;
+		
+		//update board
 		b.setCells(localBoard);
 		b.floodfill(m);
 		b.update(b);
+		
 		return b;
 	}
 
@@ -157,17 +173,22 @@ public class Board {
 	 * @param gameOver Whether the game has finished or not
 	 * @param tallyB How many cells Black player has claimed 
 	 * @param tallyW How many cells White player has claimed
+	 * @return the winner, or a draw or none if no winner
 	 */
 	public int returnWinner(Boolean gameOver, int tallyB, int tallyW){
 		
 		if(gameOver) {
+			//Draw
 			if(tallyB==tallyW) {
 				return Piece.DEAD;
-			} else if(tallyB>tallyW) {
+			} //Black wins
+			else if(tallyB>tallyW) {
 				return Piece.BLACK;
-			} else {
+			} //White wins
+			else {
 				return Piece.WHITE;
 			}
+		// None
 		} else {
 			return Piece.EMPTY;
 		}
@@ -182,18 +203,10 @@ public class Board {
 		dead.clear();
 		
 		// check all the adjacent cells
-		findNextUp(m.P, m.Row-1, m.Col);
-		update(this);
-		dead.clear();
-		findNextDown(m.P, m.Row+1, m.Col);
-		update(this);
-		dead.clear();
-		findNextLeft(m.P, m.Row, m.Col-1);
-		update(this);
-		dead.clear();
-		findNextRight(m.P, m.Row, m.Col+1);
-		update(this);
-		dead.clear();
+		findNextUp(m.P, m.Row, m.Col);
+		findNextDown(m.P, m.Row, m.Col);
+		findNextLeft(m.P, m.Row, m.Col);
+		findNextRight(m.P, m.Row, m.Col);
 	}
 	
 	/** Looks at the above cell in the board and finds if it's dead
@@ -203,7 +216,7 @@ public class Board {
 	 * @return whether or not this cell is dead (captured)
 	 */
 	public boolean findNextUp(int colour, int row, int col) {
-		
+		row = row -1;
 		//if the row and col index is out of bounds
 		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
 			return false;
@@ -218,15 +231,15 @@ public class Board {
 		//if haven't been here, go here
 		dead.put(row*this.boardDims + col, Piece.DEAD);
 		
-		if(!(findNextUp(colour, row-1, col))){
+		if(!(findNextUp(colour, row, col))){
 			dead.clear();
 			return false;
 		}
-		if(!(findNextLeft(colour, row, col-1))){
+		if(!(findNextLeft(colour, row, col))){
 			dead.clear();
 			return false;
 		}
-		if(!(findNextRight(colour, row, col+1))){
+		if(!(findNextRight(colour, row, col))){
 			dead.clear();
 			return false;
 		}
@@ -234,14 +247,14 @@ public class Board {
 		return true;
 	}
 	
-	/** Looks at the above cell in the board and finds if it's dead
+	/** Looks at the below cell in the board and finds if it's dead
 	 * @param colour the colour most recently placed (doing the capturing)
 	 * @param row the row location in the board
 	 * @param col the column location in the board
 	 * @return whether or not this cell is dead (captured)
 	 */
 	public boolean findNextDown(int colour, int row, int col) {
-		
+		row = row + 1;
 		//if the row and col index is out of bounds
 		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
 			return false;
@@ -256,15 +269,15 @@ public class Board {
 		//if haven't been here, go here
 		dead.put(row*this.boardDims + col, Piece.DEAD);
 		
-		if(!(findNextDown(colour, row+1, col))){
+		if(!(findNextDown(colour, row, col))){
 			dead.clear();
 			return false;
 		}
-		if(!(findNextLeft(colour, row, col-1))){
+		if(!(findNextLeft(colour, row, col))){
 			dead.clear();
 			return false;
 		}
-		if(!(findNextRight(colour, row, col+1))){
+		if(!(findNextRight(colour, row, col))){
 			dead.clear();
 			return false;
 		}
@@ -272,14 +285,14 @@ public class Board {
 		return true;
 	}
 	
-	/** Looks at the above cell in the board and finds if it's dead
+	/** Looks at the cell to the left in the board and finds if it's dead
 	 * @param colour the colour most recently placed (doing the capturing)
 	 * @param row the row location in the board
 	 * @param col the column location in the board
 	 * @return whether or not this cell is dead (captured)
 	 */
 	public boolean findNextLeft(int colour, int row, int col) {
-		
+		col = col - 1;
 		//if the row and col index is out of bounds
 		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
 			return false;
@@ -294,15 +307,15 @@ public class Board {
 		//if haven't been here, go here
 		dead.put(row*this.boardDims + col, Piece.DEAD);
 		
-		if(!(findNextLeft(colour, row, col-1))){
+		if(!(findNextLeft(colour, row, col))){
 			dead.clear();
 			return false;
 		}
-		if(!(findNextUp(colour, row-1, col))){
+		if(!(findNextUp(colour, row, col))){
 			dead.clear();
 			return false;
 		}
-		if(!(findNextDown(colour, row+1, col))){
+		if(!(findNextDown(colour, row, col))){
 			dead.clear();
 			return false;
 		}
@@ -310,14 +323,14 @@ public class Board {
 		return true;
 	}
 	
-	/** Looks at the above cell in the board and finds if it's dead
+	/** Looks at the cell to the right in the board and finds if it's dead
 	 * @param colour the colour most recently placed (doing the capturing)
 	 * @param row the row location in the board
 	 * @param col the column location in the board
 	 * @return whether or not this cell is dead (captured)
 	 */
 	public boolean findNextRight(int colour, int row, int col) {
-		
+		col = col +1;
 		//if the row and col index is out of bounds
 		if(row<0||col<0||row>=this.boardDims||col>=this.boardDims) {
 			return false;
@@ -332,15 +345,15 @@ public class Board {
 		//if haven't been here, go here
 		dead.put(row*this.boardDims + col, Piece.DEAD);
 		
-		if(!(findNextRight(colour, row, col+1))){
+		if(!(findNextRight(colour, row, col))){
 			dead.clear();
 			return false;
 		}
-		if(!(findNextUp(colour, row-1, col))){
+		if(!(findNextUp(colour, row, col))){
 			dead.clear();
 			return false;
 		}
-		if(!(findNextDown(colour, row+1, col))){
+		if(!(findNextDown(colour, row, col))){
 			dead.clear();
 			return false;
 		}
@@ -358,7 +371,8 @@ public class Board {
 			for(int j =0; j<this.boardDims; j++) {
 				
 				//check if the cell is dead
-				cell_is_dead = dead.getOrDefault(i*this.boardDims + j, Piece.INVALID);
+				cell_is_dead = dead.getOrDefault(i*this.boardDims + j, 
+						Piece.INVALID);
 				
 				// if its dead, change the board
 				if(cell_is_dead == Piece.DEAD) {
@@ -410,6 +424,9 @@ public class Board {
 		}
 	}
 	
+	/** SORT THIS OUT!!!!!!! PRINT STREAAAAAAAMMMMMMMMMMMMMMMMM
+	 * @param b
+	 */
 	public void printBoard(Board b){
 		int cell = 0;
 		for(int i=0; i<b.boardDims; i++){
