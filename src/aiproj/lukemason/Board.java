@@ -88,32 +88,7 @@ public class Board {
 		}
 		
 	}
-	
-	public int getTallyW(){
-		int tally = 0;
-		int[][]cells = this.getCells();
-		for(int i=0; i<this.getBoardDims(); i++){
-			for(int j=0; j<this.getBoardDims(); j++){
-				if (cells[i][j]==Piece.WHITE){
-					tally++;
-				}
-			}
-		}
-		return tally;
-	}
-	
-	public int getTallyB(){
-		int tally = 0;
-		int[][]cells = this.getCells();
-		for(int i=0; i<this.getBoardDims(); i++){
-			for(int j=0; j<this.getBoardDims(); j++){
-				if (cells[i][j]==Piece.BLACK){
-					tally++;
-				}
-			}
-		}
-		return tally;
-	}
+
 	
 	/** Fills the initialised board cells inputted */
 	public void fillBoard(int[][] contents, HashMap<Integer, Integer> deadIn) {

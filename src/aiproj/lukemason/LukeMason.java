@@ -35,6 +35,8 @@ public class LukeMason implements Player, Piece {
 	public int init(int n, int p) {
 
 		board = new Board(n);
+		
+		alterDepth(n);
 
 		if(p==1){
 			setPlayerColour(Piece.WHITE);
@@ -48,6 +50,22 @@ public class LukeMason implements Player, Piece {
 		}
 
 		return 0;
+	}
+	
+	/**
+	 * Smart depth allocation for board sizes to cope with minimax
+	 * @param dim
+	 */
+	public void alterDepth(int dim){
+		if (dim<=6){
+			setDepth(3);
+		}else if (dim>6 && dim<9){
+			setDepth(2);
+		}else{
+			setDepth(1);
+		}
+		
+		
 	}
 
 	/**
@@ -69,7 +87,7 @@ public class LukeMason implements Player, Piece {
 	 */
 	@Override
 	public Move makeMove() {
-
+		System.out.println("Depth: "+depth);
 		Move move = new Move();
 		move = minimax(board, this.depth, true, 0).getMove();
 		board.placeMove(board, move);
@@ -132,8 +150,8 @@ public class LukeMason implements Player, Piece {
 		board.state(board, this);
 		
 		//was this.tally but changed it because no method was updating it
-		return board.returnWinner(gameOver, board.getTallyB(),
-				board.getTallyW());
+		return board.returnWinner(gameOver, this.getTallyB(),
+				this.getTallyW());
 	}
 	
 	/**
@@ -152,15 +170,17 @@ public class LukeMason implements Player, Piece {
 	 * @return utility value
 	 */
 	public double utility(Board board){
-		if (board.getTallyW()<board.getTallyB()){
-			if (this.getPlayerColour() == board.getTallyW()){
+		board.state(board, this);
+		
+		if (this.getTallyW()<this.getTallyB()){
+			if (this.getPlayerColour() == this.getTallyW()){
 				return -100;
 			}else{
 				return 100;
 			}
 
 		}else{
-			if (this.getPlayerColour() == board.getTallyW()){
+			if (this.getPlayerColour() == this.getTallyW()){
 				return 100;
 			}else{
 				return -100;
@@ -181,7 +201,8 @@ public class LukeMason implements Player, Piece {
 	 * compared to by a new move
 	 * @return
 	 */
-	public Minimax minimax(Board board, int depth, boolean max, double cur_optimal){
+	public Minimax minimax(Board board, int depth, boolean max,
+			double cur_optimal){
 		double curVal = Double.NaN; //initialise currentvalue
 		double val;
 		int dims = board.getBoardDims();
@@ -221,7 +242,8 @@ public class LukeMason implements Player, Piece {
 					//Call minimax
 					if (max){
 						//return value of next level of simulation
-						val = minimax(tmpBoard, depth-1, false, curVal).getValue();
+						val = minimax(tmpBoard, depth-1, false, curVal)
+								.getValue();
 						
 						//if the value is better, update it
 						if(optimalMove==null || val>curVal){
@@ -229,7 +251,8 @@ public class LukeMason implements Player, Piece {
 							optimalMove = move;
 						}
 					}else{
-						val = minimax(tmpBoard, depth-1, true, curVal).getValue();
+						val = minimax(tmpBoard, depth-1, true, curVal)
+								.getValue();
 						
 						//if the value is better, update it
 						if(optimalMove==null || val<curVal){
@@ -245,6 +268,14 @@ public class LukeMason implements Player, Piece {
 		return out;
 	}
 	
+	/**
+	 * Returns a weight for the heuristic function based on adjacent cells 
+	 * @param row location of row to search from
+	 * @param col location of column to search from
+	 * @param colour colour of start cell
+	 * @param cells cells of the board to search in
+	 * @return
+	 */
 	public double adjacentSpace(int row, int col, int colour, int[][] cells){
 		double playerSpace = 0.0;
 		
@@ -252,11 +283,13 @@ public class LukeMason implements Player, Piece {
 		for(int adj_r=-1; adj_r<1; adj_r++){
 			for(int adj_c=-1; adj_c<1; adj_c++){
 				if(colour==Piece.WHITE){
-					if (cells[row+adj_r][col+adj_c] == Piece.EMPTY || cells[row+adj_r][col+adj_c] == Piece.WHITE){
+					if (cells[row+adj_r][col+adj_c] == Piece.EMPTY ||
+							cells[row+adj_r][col+adj_c] == Piece.WHITE){
 						playerSpace += 0.5;
 					}
 				} else {
-					if (cells[row+adj_r][col+adj_c] == Piece.EMPTY || cells[row+adj_r][col+adj_c] == Piece.BLACK){
+					if (cells[row+adj_r][col+adj_c] == Piece.EMPTY ||
+							cells[row+adj_r][col+adj_c] == Piece.BLACK){
 						playerSpace += 0.5;
 					}
 				}
@@ -279,6 +312,7 @@ public class LukeMason implements Player, Piece {
 		int theirColour = this.getOpponentColour();
 		int playerDead=0, opponentDead=0, spaceDead=0;
 		double playerSpace=0, opponentSpace=0;
+		double playerDiags=0, opponentDiags=0;
 		
 		
 		for (int i=1; i<dim-1; i++){
@@ -301,36 +335,59 @@ public class LukeMason implements Player, Piece {
 					}
 				}else if (cells[i][j] == Piece.DEAD){
 					//captured empty cells
-					spaceDead++;
+					if(adjacentSpace(i,j,ourColour, cells)>0){
+						spaceDead++;
+					}
 				}
 				
-				//how much space player has (small weight)
+				//Diagonals:
+				if(cells[i][j] == ourColour){
+					for(int x=-1; x<=1; x+=2){
+						for(int y=-1; y<=1; y+=2){
+							if (cells[i+x][j+y]==ourColour){
+								playerDiags++;
+							} else if(cells[i+x][j+y] == theirColour){
+								opponentDiags++;
+							}
+						}
+					}
+				}
+				
+				//how much space player has
 				if(cells[i][j]==ourColour){
 					playerSpace = adjacentSpace(i, j, ourColour, cells);
 				} else if (cells[i][j]==theirColour){
 					opponentSpace = adjacentSpace(i, j, theirColour, cells);
 				}
 				
-				//Diagonals
-				h+=diagonals(thisBoard, i, j);
+				
 			}
 		}
 		
-		h+=20*opponentDead;
-		h-=20*playerDead;
-		h+=20*spaceDead;
-		h+=0.5*playerSpace;
-		h-=0.75*opponentSpace;
-		//System.out.println("\n" +  h + "\n");
+		h+=19*playerDiags;
+		h-=20*opponentDiags;
+		h+=50*opponentDead;
+		h-=50*playerDead;
+		h+=40*spaceDead;
+		h+=5*playerSpace;
+		h-=7*opponentSpace;
+		//System.out.println("\n" +  playerDiags + "\n");
 		return h;
 	}
 	
 	
-	
+	/**
+	 * Promotes the joining of diagonals of our stomes and demotes
+	 * the joining of diagonals of opponent stones
+	 * @param thisBoard
+	 * @param row
+	 * @param col
+	 * @return
+	 */
 	public int diagonals(Board thisBoard, int row, int col){
 			int[][]cells = thisBoard.getCells(thisBoard);
 			int playerDiags=0, opponentDiags=0;
-			int playerAdjs=0, opponentAdjs=0;
+
 			
 			//Diagonals:
 			for(int i=-1; i<=1; i+=2){
@@ -345,72 +402,10 @@ public class LukeMason implements Player, Piece {
 				}
 			}
 			
-			//Perpendicular +ve weight a little
-			if (cells[row-1][col]==this.playerColour){
-				playerAdjs++;
-			}else if (cells[row-1][col]==this.opponentColour){
-				opponentAdjs++;
-			}
-			if (cells[row+1][col]==this.playerColour){
-				playerAdjs++;
-			}else if (cells[row+1][col]==this.opponentColour){
-				opponentAdjs++;
-			}
-			if (cells[row][col-1]==this.playerColour){
-				playerAdjs++;
-			}else if (cells[row][col-1]==this.opponentColour){
-				opponentAdjs++;
-			}
-			if (cells[row][col+1]==this.playerColour){
-				playerAdjs++;
-			}else if (cells[row][col+1]==this.opponentColour){
-				opponentAdjs++;
-			}
 			
-			//System.out.println("Player Diagonals: "+playerDiags+"  Opponent Diagonals: "+opponentDiags);
-		return (2*(playerDiags - opponentDiags)+(playerAdjs+opponentAdjs));
+		return (2*(playerDiags - opponentDiags));
 	}
 	
-	/**
-	 * finds the amount of adjacent real-estate for each player
-	 * @param board - board to be evaluated
-	 * @return current players real-estate minus the opponents
-	 */
-	public int liberties(Board board){
-		int[][] cells = board.getCells();
-		int dim = board.getBoardDims();
-		
-		int lib_player = 0;
-		int lib_opponent = 0;
-		
-		//Count liberties
-		for(int i=0; i<dim; i++){
-			for(int j=0; j<dim; j++){
-				//Find an occupied living cell
-				if(cells[i][j]==Piece.WHITE || cells[i][j]==Piece.BLACK){
-					//check adjacent
-					
-					for(int d_i=-1;d_i<=1;d_i++){
-						for(int d_j=-1; d_j <=1; d_j++){
-							try{
-								if(cells[i+d_i][j+d_j]==Piece.EMPTY){	
-									if(cells[i][j]==this.getPlayerColour()){
-										lib_player++;
-									}else if(cells[i][j]==this.getOpponentColour()){
-										lib_opponent++;
-									}else{
-										
-									}
-								}
-							}catch (ArrayIndexOutOfBoundsException e){
-							} finally {}
-						}
-					}
-				}	
-			}
-		}
-		return lib_player - lib_opponent;
-	}
 	
 	public int getTallyB() {
 		return tallyB;
@@ -450,6 +445,10 @@ public class LukeMason implements Player, Piece {
 
 	public void setOpponentColour(int opponentColour) {
 		this.opponentColour = opponentColour;
+	}
+	
+	public void setDepth(int depth){
+		this.depth = depth;
 	}
 	
 }
