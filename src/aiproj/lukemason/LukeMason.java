@@ -20,6 +20,7 @@ public class LukeMason implements Player, Piece {
 	
 	//Default foresight is two moves
 	protected int depth = 3;
+	public int moveCount = 0;
 	
 	private int tallyB = 0;
 	private int tallyW = 0;
@@ -35,8 +36,6 @@ public class LukeMason implements Player, Piece {
 	public int init(int n, int p) {
 
 		board = new Board(n);
-		
-		alterDepth(n);
 
 		if(p==1){
 			setPlayerColour(Piece.WHITE);
@@ -52,21 +51,7 @@ public class LukeMason implements Player, Piece {
 		return 0;
 	}
 	
-	/**
-	 * Smart depth allocation for board sizes to cope with minimax
-	 * @param dim
-	 */
-	public void alterDepth(int dim){
-		if (dim<=6){
-			setDepth(3);
-		}else if (dim>6 && dim<9){
-			setDepth(2);
-		}else{
-			setDepth(1);
-		}
-		
-		
-	}
+
 
 	/**
 	 * Return the integer corresponding the other player
@@ -80,6 +65,27 @@ public class LukeMason implements Player, Piece {
 		return 1;
 	}
 	
+	public int[] makeRandMove(){
+		
+		int[][] currentBoard = board.getCells();
+		int dim = board.getBoardDims();
+		int move_coords[] = {0,0};
+		
+		int i = (int) Math.ceil((dim)*Math.random()-1);
+		int j = (int) Math.ceil((dim)*Math.random()-1);
+		
+		if (currentBoard[i][j]!=Piece.EMPTY){
+			return makeRandMove();
+		}
+		
+		move_coords[0] = i;
+		move_coords[1] = j;
+		
+		return move_coords;
+
+		
+	}
+	
 	/**
 	 * Performs a move of best choice by running through minimax and
 	 * comparing heuristic values for different outcomes
@@ -87,7 +93,59 @@ public class LukeMason implements Player, Piece {
 	 */
 	@Override
 	public Move makeMove() {
-		System.out.println("Depth: "+depth);
+		
+		//Board of size 6
+		//Average half game of 4secs
+		if(board.getBoardDims()==6){
+			if (getMoveNum()<7){
+				incrementMove();
+				Move move = new Move();
+				int[] tmp_move;
+		
+				if (this.getGameOver()){
+					return null;
+				}
+				tmp_move = makeRandMove();
+				move.Row = tmp_move[0];
+				move.Col = tmp_move[1];
+				move.P = this.playerColour;
+				board.placeMove(board, move);
+				return move;
+			}else if(getMoveNum()<20){
+				incrementMove();
+				setDepth(4);
+			}else{
+				incrementMove();
+				setDepth(5);
+			}
+		}
+		
+		//Board of size 7
+		//average half game time is around 7secs
+		if (board.getBoardDims()==7){
+			if (getMoveNum()<4){
+				incrementMove();
+				Move move = new Move();
+				int[] tmp_move;
+				
+				if (this.getGameOver()){
+					return null;
+				}
+				tmp_move = makeRandMove();
+				move.Row = tmp_move[0];
+				move.Col = tmp_move[1];
+				move.P = this.playerColour;
+				board.placeMove(board, move);
+				return move;
+			}else if(getMoveNum()<12){
+				incrementMove();
+				setDepth(3);
+			}else{
+				incrementMove();
+				setDepth(4);
+			}
+		}
+		
 		Move move = new Move();
 		move = minimax(board, this.depth, true, 0).getMove();
 		board.placeMove(board, move);
@@ -449,6 +507,14 @@ public class LukeMason implements Player, Piece {
 	
 	public void setDepth(int depth){
 		this.depth = depth;
+	}
+	
+	public void incrementMove(){
+		this.moveCount++;
+	}
+	
+	public int getMoveNum(){
+		return this.moveCount;
 	}
 	
 }
